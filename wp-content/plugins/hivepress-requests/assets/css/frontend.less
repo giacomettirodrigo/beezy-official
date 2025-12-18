@@ -1,0 +1,112 @@
+.hp {
+	/*--------------------------------------------------------------
+	Offers
+	--------------------------------------------------------------*/
+	&-offer {
+		&__content,
+		&__footer,
+		&__header {
+			&:not(:last-child) {
+				margin-bottom: 1rem;
+			}
+		}
+
+		&__header {
+			display: flex;
+			align-items: center;
+		}
+
+		&__footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		&__image {
+			flex: 0 0 4rem;
+			margin-right: 1.5rem;
+
+			img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 50%;
+			}
+		}
+
+		&__summary {
+			min-width: 0;
+		}
+
+		&__bidder,
+		&__details {
+			&:not(:last-child) {
+				margin-bottom: 0.5rem;
+			}
+		}
+
+		&__details {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		&__bidder {
+			margin-top: 0;
+			word-wrap: break-word;
+		}
+
+		&__created-date {
+			margin-bottom: 0.5rem;
+
+			&:not(:last-child) {
+				margin-right: 0.5rem;
+			}
+		}
+
+		&__created-date {
+			font-size: 80%;
+		}
+
+		&__text {
+			&:not(:last-child) {
+				margin-bottom: 0.5rem;
+			}
+
+			p {
+				margin-bottom: 0.5rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+
+		&__attachment {
+			max-width: 100%;
+			display: flex;
+
+			&:not(:last-child) {
+				margin-bottom: 0.5rem;
+			}
+
+			span {
+				white-space: nowrap;
+			    overflow: hidden;
+			    text-overflow: ellipsis;
+			}
+		}
+
+		&__actions--primary {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		&__actions--primary &__action {
+			&:not(:last-child) {
+				margin-right: 1.5rem;
+			}
+		}
+	}
+}

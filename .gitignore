@@ -1,0 +1,23 @@
+# 1. IGNORE EVERYTHING (The "Engine")
+/*
+!/.gitignore
+!/.github/
+!/.cursorrules
+
+# 2. UN-IGNORE Your Work (The "Paint")
+!/wp-content/
+
+# 3. RE-IGNORE Junk inside your work
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backups/
+/wp-content/backups-dup-lite/
+/wp-content/ai1wm-backups/
+/wp-content/speedycache-config/
+/wp-content/index.php
+*.zip
+*.sql
+*.log
+.DS_Store
+node_modules/

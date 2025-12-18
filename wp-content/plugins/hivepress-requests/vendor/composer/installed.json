@@ -1,0 +1,35 @@
+{
+    "packages": [
+        {
+            "name": "hivepress/hivepress-updates",
+            "version": "1.0.2",
+            "version_normalized": "1.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hivepress/hivepress-updates.git",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hivepress/hivepress-updates/zipball/1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "shasum": ""
+            },
+            "time": "2020-07-09T21:58:03+00:00",
+            "type": "wordpress-plugin",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "Get updates for HivePress themes and extensions.",
+            "support": {
+                "issues": "https://github.com/hivepress/hivepress-updates/issues",
+                "source": "https://github.com/hivepress/hivepress-updates/tree/1.0.2"
+            },
+            "install-path": "../hivepress/hivepress-updates"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

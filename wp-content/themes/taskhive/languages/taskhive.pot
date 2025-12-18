@@ -1,0 +1,95 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TaskHive\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-12-04 18:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.0; wp-5.6\n"
+"X-Domain: taskhive"
+
+#. Description of the theme
+msgid ""
+"A multipurpose WordPress theme that allows you to build a marketplace of "
+"services or digital downloads."
+msgstr ""
+
+#: includes/configs/theme-mods.php:23
+msgid "Background Color"
+msgstr ""
+
+#: comments.php:36
+msgid "Cancel Reply"
+msgstr ""
+
+#: comments.php:3
+msgid "Comments"
+msgstr ""
+
+#: includes/components/class-theme.php:523
+msgid "Display in a slider"
+msgstr ""
+
+#: includes/configs/theme-mods.php:29
+msgid "Enable background noise effect"
+msgstr ""
+
+#. Author of the theme
+msgid "HivePress"
+msgstr ""
+
+#. Author URI of the theme
+msgid "https://hivepress.io"
+msgstr ""
+
+#. URI of the theme
+msgid "https://hivepress.io/themes/taskhive"
+msgstr ""
+
+#: hivepress/listing/submit/listing-submit-link.php:7
+msgid "List a Service"
+msgstr ""
+
+#: index.php:17
+msgid "Nothing found"
+msgstr ""
+
+#: searchform.php:2
+msgctxt "noun"
+msgid "Search"
+msgstr ""
+
+#: templates/post/post-details.php:9
+msgctxt "post"
+msgid "Pinned"
+msgstr ""
+
+#: hivepress/vendor/view/vendor-verified-badge.php:9
+msgid "Pro"
+msgstr ""
+
+#: templates/post/post-details.php:23
+msgid "Read More"
+msgstr ""
+
+#: templates/comment.php:16
+msgid "Reply"
+msgstr ""
+
+#: index.php:18
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#. Name of the theme
+msgid "TaskHive"
+msgstr ""

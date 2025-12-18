@@ -1,0 +1,181 @@
+# Copyright (C) 2024 HivePress
+# This file is distributed under the same license as the HivePress Messages plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: HivePress Messages 1.4.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hivepress-messages\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-12-18T21:44:32+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: hivepress-messages\n"
+
+#. Plugin Name of the plugin
+#: hivepress-messages.php
+msgid "HivePress Messages"
+msgstr ""
+
+#. Description of the plugin
+#: hivepress-messages.php
+msgid "Allow users to send private messages."
+msgstr ""
+
+#. Author of the plugin
+#: hivepress-messages.php
+msgid "HivePress"
+msgstr ""
+
+#. Author URI of the plugin
+#: hivepress-messages.php
+msgid "https://hivepress.io/"
+msgstr ""
+
+#: includes/components/class-message.php:167
+msgid "Your message contains inappropriate content."
+msgstr ""
+
+#: includes/components/class-message.php:207
+msgid "Attachment"
+msgstr ""
+
+#: includes/components/class-message.php:493
+#: includes/forms/class-message-delete.php:49
+#: templates/message/view/message-delete-link.php:5
+msgid "Delete Message"
+msgstr ""
+
+#: includes/configs/settings.php:20
+msgid "Sending"
+msgstr ""
+
+#: includes/configs/settings.php:25
+msgid "Attachments"
+msgstr ""
+
+#: includes/configs/settings.php:26
+msgid "Allow file attachments"
+msgstr ""
+
+#: includes/configs/settings.php:27
+msgid "Check this option to allow users to attach files to messages."
+msgstr ""
+
+#: includes/configs/settings.php:33
+msgid "Allowed File Types"
+msgstr ""
+
+#: includes/configs/settings.php:42
+msgid "Refresh Interval"
+msgstr ""
+
+#: includes/configs/settings.php:43
+msgid "Set the number of seconds it takes to refresh conversations."
+msgstr ""
+
+#: includes/configs/settings.php:59
+msgid "Monitoring"
+msgstr ""
+
+#: includes/configs/settings.php:60
+msgid "Allow monitoring messages"
+msgstr ""
+
+#: includes/configs/settings.php:61
+msgid "Check this option to allow administrators to monitor the conversations of other users."
+msgstr ""
+
+#: includes/configs/settings.php:67
+msgid "Blocked Keywords"
+msgstr ""
+
+#: includes/configs/settings.php:68
+msgid "Messages containing these keywords will be blocked, enter each keyword on a new line."
+msgstr ""
+
+#: includes/configs/settings.php:83
+msgid "Store messages in the database"
+msgstr ""
+
+#: includes/configs/settings.php:84
+msgid "Check this option to store messages in the database, rather than sending them via email."
+msgstr ""
+
+#: includes/configs/settings.php:91
+msgid "Allow users to delete messages"
+msgstr ""
+
+#: includes/configs/settings.php:99
+msgid "Set the number of days after which a message is deleted."
+msgstr ""
+
+#: includes/configs/strings.php:14
+msgid "Messages"
+msgstr ""
+
+#: includes/configs/strings.php:15
+msgid "Send Message"
+msgstr ""
+
+#: includes/configs/strings.php:16
+msgid "Reply to Listing"
+msgstr ""
+
+#: includes/controllers/class-message.php:135
+msgid "You can't send messages to yourself."
+msgstr ""
+
+#: includes/controllers/class-message.php:197
+msgid "New reply to \"%s\""
+msgstr ""
+
+#: includes/controllers/class-message.php:199
+msgid "New message from %s"
+msgstr ""
+
+#. translators: 1: sender name, 2: recipient name.
+#: includes/controllers/class-message.php:524
+msgid "Messages from %1$s to %2$s"
+msgstr ""
+
+#. translators: %s: sender name.
+#: includes/controllers/class-message.php:528
+msgid "Messages from %s"
+msgstr ""
+
+#: includes/emails/class-message-send.php:30
+#: includes/emails/class-message-send.php:49
+msgid "Message Received"
+msgstr ""
+
+#: includes/emails/class-message-send.php:31
+msgid "This email is sent to users when a new message is received."
+msgstr ""
+
+#: includes/emails/class-message-send.php:50
+msgid "Hi, %user_name%! You've received a new message, click on the following link to view it: %message_url%"
+msgstr ""
+
+#: includes/forms/class-message-delete.php:44
+msgid "Are you sure you want to permanently delete this message?"
+msgstr ""
+
+#: includes/forms/class-message-send.php:48
+msgid "Your message has been sent."
+msgstr ""
+
+#: includes/models/class-message.php:32
+msgid "Message"
+msgstr ""
+
+#: includes/templates/class-messages-thread-page.php:30
+#: includes/templates/class-messages-thread-page.php:52
+msgid "Conversations"
+msgstr ""
+
+#: includes/templates/class-messages-view-page.php:30
+msgid "Conversation"
+msgstr ""

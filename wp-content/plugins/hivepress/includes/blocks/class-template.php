@@ -1,0 +1,138 @@
+<?php
+/**
+ * Template block.
+ *
+ * @package HivePress\Blocks
+ */
+
+namespace HivePress\Blocks;
+
+use HivePress\Helpers as hp;
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Renders a template.
+ */
+class Template extends Block {
+
+	/**
+	 * Template name.
+	 *
+	 * @var string
+	 */
+	protected $template;
+
+	/**
+	 * Custom blocks.
+	 *
+	 * @var array
+	 */
+	protected $blocks = [];
+
+	/**
+	 * Renders block HTML.
+	 *
+	 * @return string
+	 */
+	public function render() {
+		$blocks  = [];
+		$context = [];
+
+		// Get template class.
+		$class = '\HivePress\Templates\\' . $this->template;
+
+		// Get template count.
+		$count = wp_count_posts( 'hp_template' );
+
+		if ( $count->publish && class_exists( $class ) && $class::get_meta( 'label' ) ) {
+
+			// Get template content.
+			$content = hp\get_first_array_value(
+				get_posts(
+					[
+						'name'             => $class::get_meta( 'name' ),
+						'post_type'        => 'hp_template',
+						'post_status'      => 'publish',
+						'posts_per_page'   => 1,
+						'suppress_filters' => ! hivepress()->translator->is_multilingual(),
+					]
+				)
+			);
+
+			if ( $content ) {
+
+				// Register blocks.
+				$template = hivepress()->editor->register_template_blocks(
+					$this->template,
+					[
+						'context' => $this->context,
+						'blocks'  => $this->blocks,
+					]
+				);
+
+				// Set blocks.
+				$blocks = [
+					'page_container' => [
+						'type'       => 'page',
+						'attributes' => $template->get_attributes(),
+						'_order'     => 10,
+
+						'blocks'     => [
+							'page_content' => [
+								'type'     => 'callback',
+								'callback' => 'apply_filters',
+								'params'   => [ 'the_content', $content->post_content ],
+								'return'   => true,
+								'_order'   => 10,
+							],
+						],
+					],
+				];
+			}
+		}
+
+		if ( ! $blocks ) {
+
+			// Create template.
+			$template = hp\create_class_instance(
+				$class,
+				[
+					[
+						'context' => $this->context,
+						'blocks'  => $this->blocks,
+					],
+				]
+			);
+
+			if ( $template ) {
+
+				// Set blocks.
+				$blocks = $template->get_blocks();
+
+				// Set context.
+				$context = $template->get_context();
+			}
+		}
+
+		if ( isset( $content ) ) {
+			hivepress()->request->set_post( $content, false );
+		}
+
+		// Render template.
+		$output = ( new Container(
+			[
+				'tag'     => false,
+				'context' => $context,
+				'blocks'  => $blocks,
+			]
+		) )->render();
+
+		if ( isset( $content ) ) {
+			hivepress()->request->reset_post();
+		}
+
+		return $output;
+	}
+}

@@ -1,0 +1,199 @@
+# Copyright (C) 2025 HivePress
+# This file is distributed under the same license as the HivePress Reviews plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: HivePress Reviews 1.4.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hivepress-reviews\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-10-23T09:47:02+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: hivepress-reviews\n"
+
+#. Plugin Name of the plugin
+#: hivepress-reviews.php
+msgid "HivePress Reviews"
+msgstr ""
+
+#. Description of the plugin
+#: hivepress-reviews.php
+msgid "Allow users to rate and review listings."
+msgstr ""
+
+#. Author of the plugin
+#: hivepress-reviews.php
+msgid "HivePress"
+msgstr ""
+
+#. Author URI of the plugin
+#: hivepress-reviews.php
+msgid "https://hivepress.io/"
+msgstr ""
+
+#: includes/blocks/class-reviews.php:100
+#: includes/configs/settings.php:31
+msgctxt "sort order"
+msgid "Rating"
+msgstr ""
+
+#: includes/components/class-review.php:195
+#: includes/components/class-review.php:574
+#: includes/components/class-review.php:654
+#: includes/models/class-review.php:40
+msgid "Rating"
+msgstr ""
+
+#: includes/components/class-review.php:294
+msgid "Hide my identity"
+msgstr ""
+
+#: includes/components/class-review.php:496
+msgid "You've already submitted a review."
+msgstr ""
+
+#: includes/components/class-review.php:616
+#: includes/forms/class-review-submit.php:30
+#: templates/listing/view/page/review-submit-link.php:7
+msgid "Write a Review"
+msgstr ""
+
+#: includes/components/class-review.php:701
+#: includes/forms/class-review-reply.php:30
+msgid "Reply to Review"
+msgstr ""
+
+#: includes/configs/settings.php:36
+msgid "Reviews per Page"
+msgstr ""
+
+#: includes/configs/settings.php:53
+msgid "Allow submitting multiple reviews"
+msgstr ""
+
+#: includes/configs/settings.php:54
+msgid "Check this option to allow users to post more than one review for the same listing."
+msgstr ""
+
+#: includes/configs/settings.php:60
+msgid "Allow making reviews anonymous"
+msgstr ""
+
+#: includes/configs/settings.php:61
+msgid "Check this option to allow users to hide their personal details in reviews."
+msgstr ""
+
+#: includes/configs/settings.php:74
+msgid "Manually approve new reviews"
+msgstr ""
+
+#: includes/configs/settings.php:81
+msgid "Replies"
+msgstr ""
+
+#: includes/configs/settings.php:82
+msgid "Allow replying to reviews"
+msgstr ""
+
+#: includes/configs/settings.php:88
+msgid "Criteria"
+msgstr ""
+
+#: includes/configs/settings.php:89
+msgid "Add review criteria to enable multiple ratings per review."
+msgstr ""
+
+#: includes/configs/strings.php:14
+msgid "Reviews"
+msgstr ""
+
+#: includes/configs/strings.php:15
+msgid "You can't review your own listings."
+msgstr ""
+
+#: includes/emails/class-review-add.php:30
+#: includes/emails/class-review-add.php:49
+msgid "Review Added"
+msgstr ""
+
+#: includes/emails/class-review-add.php:31
+msgid "This email is sent to vendors when a new review is added."
+msgstr ""
+
+#: includes/emails/class-review-add.php:50
+#, php-format
+msgid "Hi, %user_name%! A new review of \"%listing_title%\" has been added, click on the following link to view it: %review_url%"
+msgstr ""
+
+#: includes/emails/class-review-approve.php:30
+#: includes/emails/class-review-approve.php:49
+msgid "Review Approved"
+msgstr ""
+
+#: includes/emails/class-review-approve.php:31
+msgid "This email is sent to users when their review is approved."
+msgstr ""
+
+#: includes/emails/class-review-approve.php:50
+#, php-format
+msgid "Hi, %user_name%! Your review of \"%listing_title%\" has been approved, click on the following link to view it: %review_url%"
+msgstr ""
+
+#: includes/emails/class-review-reply.php:30
+msgid "Review Replied"
+msgstr ""
+
+#: includes/emails/class-review-reply.php:31
+msgid "This email is sent to users when a new review reply is received."
+msgstr ""
+
+#: includes/emails/class-review-reply.php:49
+msgid "New reply to review"
+msgstr ""
+
+#: includes/emails/class-review-reply.php:50
+#, php-format
+msgid "Hi, %user_name%! You've received a new reply to your review of \"%listing_title%\", click on the following link to view it: %review_url%"
+msgstr ""
+
+#: includes/forms/class-review-reply.php:48
+msgid "Your reply has been submitted."
+msgstr ""
+
+#: includes/forms/class-review-reply.php:53
+msgctxt "noun"
+msgid "Reply"
+msgstr ""
+
+#: includes/forms/class-review-reply.php:64
+msgid "Submit Reply"
+msgstr ""
+
+#: includes/forms/class-review-submit.php:48
+msgid "Your review has been submitted."
+msgstr ""
+
+#: includes/forms/class-review-submit.php:67
+msgid "Submit Review"
+msgstr ""
+
+#: includes/models/class-review.php:32
+msgid "Review"
+msgstr ""
+
+#: templates/review/view/review-author.php:16
+#: templates/review/view/review-image.php:17
+msgid "Anonymous"
+msgstr ""
+
+#: templates/review/view/review-reply-link.php:9
+msgid "Reply"
+msgstr ""
+
+#: templates/review/view/review-status-badge.php:7
+msgctxt "review"
+msgid "Pending"
+msgstr ""

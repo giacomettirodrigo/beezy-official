@@ -1,0 +1,98 @@
+{
+    "packages": [
+        {
+            "name": "hivepress/hivepress-updates",
+            "version": "1.0.2",
+            "version_normalized": "1.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hivepress/hivepress-updates.git",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hivepress/hivepress-updates/zipball/1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "shasum": ""
+            },
+            "time": "2020-07-09T21:58:03+00:00",
+            "type": "wordpress-plugin",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "Get updates for HivePress themes and extensions.",
+            "support": {
+                "issues": "https://github.com/hivepress/hivepress-updates/issues",
+                "source": "https://github.com/hivepress/hivepress-updates/tree/1.0.2"
+            },
+            "install-path": "../hivepress/hivepress-updates"
+        },
+        {
+            "name": "stripe/stripe-php",
+            "version": "v8.12.0",
+            "version_normalized": "8.12.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "1b7b1ea75c744b8a9f55a0942112f8e822a6a482"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/1b7b1ea75c744b8a9f55a0942112f8e822a6a482",
+                "reference": "1b7b1ea75c744b8a9f55a0942112f8e822a6a482",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.5.0",
+                "phpstan/phpstan": "^1.2",
+                "phpunit/phpunit": "^5.7 || ^9.0",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "time": "2022-07-25T14:42:34+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Stripe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "support": {
+                "issues": "https://github.com/stripe/stripe-php/issues",
+                "source": "https://github.com/stripe/stripe-php/tree/v8.12.0"
+            },
+            "install-path": "../stripe/stripe-php"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

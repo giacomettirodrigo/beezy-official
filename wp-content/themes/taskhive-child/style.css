@@ -1,0 +1,476 @@
+/* Deployment Test */
+/*
+ Theme Name: TaskHive Child
+ Theme URI: http://your-website.com/
+ Description: TaskHive Child Theme
+ Author: Your Name
+ Author URI: http://your-website.com/
+ Template: taskhive
+ Version: 1.0.0
+*/
+
+/* -----------------------------------------------------------------
+   FIX 1: HIDE THE ORIGINAL CLICKABLE CATEGORY ELEMENT
+   ----------------------------------------------------------------- */
+.hp-listing__categories.hp-listing__category {
+    display: none !important;
+}
+
+
+/* -----------------------------------------------------------------
+   2. LAYOUT & DISTRIBUTION (Flexbox)
+   ----------------------------------------------------------------- */
+.hp-listing__details--primary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Set the order for Task Date (1st) and City (2nd) on the first line */
+.hp-listing__task-date {
+    order: 10;
+    /* Allow Date to grow to fill space if needed, pushing City/Category */
+    flex-grow: 0;
+    /* Ensure it only takes up the space it needs */
+    flex-shrink: 1;
+}
+
+.hp-listing__task-city {
+    order: 15;
+    /* Allow City to grow slightly to help push the Category down */
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+/* Force the Custom Category (3rd) to wrap to the next line by adjusting flow */
+.hp-custom-category-static {
+    order: 20;
+
+    /* REMOVE width: 100%! */
+
+    /* Set basis to auto, ensuring the element only wraps the text */
+    flex-basis: auto;
+
+    /* Allow the element to shrink if space is tight */
+    flex-shrink: 1;
+
+    /* Set a negative margin/large gap on the first two elements to guarantee the wrap */
+    /* This is a trick to force the flex container to run out of space on the first line. */
+    margin-left: -9999px;
+    /* Pulls element way to the left */
+    padding-left: 9999px;
+    /* Pushes it back, but forces the wrap */
+
+    /* Restore top margin for spacing between the two lines */
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+
+/* -----------------------------------------------------------------
+   3. CONSISTENT STYLING (The blue, bold, white tag look)
+   ----------------------------------------------------------------- */
+.hp-listing__task-date,
+.hp-listing__task-city,
+.hp-custom-category-static {
+    /* Style rules remain the same for consistent look */
+    background-color: #2196F3 !important;
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    color: #fff !important;
+    text-transform: uppercase !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1.5;
+    text-decoration: none !important;
+    display: inline-block;
+    margin: 0;
+}
+
+/* -----------------------------------------------------------------
+   FINAL TWEAK: MAKE THE ENTIRE LISTING CONTENT BLOCK CLICKABLE
+   (Only active when .hp-block-link is output by PHP)
+   ----------------------------------------------------------------- */
+
+/* 1. Set the context for absolute positioning */
+.hp-listing {
+    position: relative;
+    cursor: pointer;
+}
+
+/* 2. Position the invisible link over the content */
+.hp-block-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* 3. Ensure interactive elements remain clickable (Footer: Budget, Offer Button) */
+.hp-listing__footer,
+.hp-listing__footer * {
+    z-index: 20;
+    position: relative;
+}
+
+/* 4. Disable pointer events for the static tags to prevent conflicts */
+.hp-listing__task-date,
+.hp-listing__task-city,
+.hp-custom-category-static {
+    pointer-events: none;
+}
+
+/* -----------------------------------------------------------------
+   CONSOLIDATED FIX: BEHAVIOR ON SINGLE REQUEST DETAIL PAGE
+   ----------------------------------------------------------------- */
+
+/* 1. Reset the cursor from pointer (hand) back to default (arrow) */
+.hp-listing--view-page.hp-listing {
+    cursor: default !important;
+}
+
+/* 2. Hide and disable the absolutely positioned block-link if it's rendered */
+.hp-listing--view-page .hp-block-link {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+/* 3. Ensure any standard links (e.g., in the description) within the content area 
+      are fully functional (pointer-events: auto) */
+.hp-listing--view-page .hp-page__content a {
+    pointer-events: auto !important;
+    z-index: auto !important;
+}
+
+/* -----------------------------------------------------------------
+   4. ACCOUNT SETTINGS (PROOF OF IDENTITY) STYLING - FINAL BLOCK
+   ----------------------------------------------------------------- */
+
+/* Ensure the parent container supports ordering */
+.hp-form__fields {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Target the Proof of Identity field wrapper (5th child) and move it to the top */
+.hp-form__field--attachment-upload:nth-child(5) {
+    order: -10;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+/* --- HIDE ORIGINAL "(OPTIONAL)" TEXT (Aggressive Fix) --- */
+.hp-form__field--attachment-upload:nth-child(5)>.hp-field__label small {
+    /* Completely remove the element from the flow and render space */
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    content: none !important;
+    /* Safety check against injected content */
+}
+
+/* --- A) STATE: No File Uploaded (Red Highlight & Helper Text beside button) --- */
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty) {
+    border: 2px solid #d9534f;
+    background-color: #fdd;
+}
+
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty)>.hp-field__label {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty) .hp-field--attachment-upload>label::after {
+    content: "Please upload your proof of identity to verify your account";
+    display: block;
+    font-size: 0.9em;
+    color: #d9534f;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+
+/* --- B) STATE: File Uploaded (Green Highlight & Success Message beside button) --- */
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty)) {
+    border: 2px solid #5cb85c;
+    background-color: #f0fff0;
+}
+
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty))>.hp-field__label {
+    color: #5cb85c;
+    font-weight: bold;
+}
+
+.hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty)) .hp-field--attachment-upload>label::after {
+    content: "Thanks for sending your proof of identity, it is now being verified. You will receive a confirmation email in 2 working days";
+    display: block;
+    font-size: 0.9em;
+    color: #5cb85c;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+/* --- C) STATE: User Verified (Hide Field Entirely) --- */
+body.user-doc-verified .hp-form__field--attachment-upload {
+    /* Targets the primary container <div> */
+    display: none !important;
+}
+
+/* --- D) FINAL, HIGH-SPECIFICITY SOLUTION (Guaranteed to Win) --- */
+
+/* Target the body, then the two main classes of the field container, 
+   and use the unique input name to ensure only this field is targeted. */
+
+body.user-is-requestor .hp-form__field.hp-form__field--attachment-upload:not(.hp-form__field--attachment-upload-dummy) {
+    display: none !important;
+}
+
+/* -----------------------------------------------------------------
+ USER ACCOUNT MENU CUSTOMIZATION (Sidebar Menu)
+ ----------------------------------------------------------------- */
+
+/* Hide the 'Orders' link from the User Account sidebar menu */
+.hp-menu--user-account .hp-menu__item--orders-view {
+    display: none !important;
+}
+
+/* ONLY increase font size for menu links inside the sidebar (prevents header interference) */
+.hp-page__sidebar .hp-menu--user-account a {
+    font-size: 1.1em !important;
+}
+
+
+/* -----------------------------------------------------------------
+2. REQUEST LISTING CUSTOMIZATION (Expired, Countdown, and Positioning)
+   ----------------------------------------------------------------- */
+
+/* 2a. POSITIONING FIX: Anchor the parent content container */
+.hp-requests .hp-listing .hp-listing__content {
+    position: relative !important;
+}
+
+/* 2b. POSITIONING FIX: Place the label absolutely in the top-right corner */
+.hp-requests .hp-listing .hp-listing__content .hp-unified-label {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 10 !important;
+
+    /* Base styles for the label element */
+    display: inline-block !important;
+    font-size: 0.7em !important;
+    font-weight: bold !important;
+    border-radius: 3px !important;
+    vertical-align: middle !important;
+    line-height: 1.5 !important;
+    margin-left: 0 !important;
+    /* Removes old left margin */
+}
+
+
+/* 2c. COUNTDOWN STYLING (The Green Box) */
+.hp-requests .hp-listing .hp-listing__content .hp-countdown-label {
+    font-weight: 700 !important;
+    /* Bold */
+    color: #28a745 !important;
+    /* Strong Green Font */
+
+    background-color: #e2f9e7 !important;
+    /* Very light green background */
+    border: 1px solid #28a745 !important;
+    /* Solid Green Border */
+    padding: 2px 6px !important;
+    /* Box padding */
+}
+
+
+/* 2d. EXPIRED LABEL STYLING (The Red Box - Retained from original request) */
+.hp-requests .hp-listing .hp-listing__content .hp-expired-label {
+    font-weight: 700 !important;
+    background-color: #ff0000 !important;
+    color: #ffffff !important;
+    padding: 2px 6px !important;
+}
+
+
+/* 2e. EXPIRED BLOCK VISUAL TWEAKS */
+
+/* Main block styling for expired requests (removing blue highlight, dimming) */
+.hp-listing--expired {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    background-color: #f5f5f5 !important;
+    opacity: 0.9 !important;
+}
+
+/* Subdue the main title text when expired */
+.hp-listing--expired .hp-listing__title a {
+    color: #888 !important;
+}
+
+/* TARGET SPECIFIC METADATA FIELDS for RED FONT & NO HIGHLIGHT */
+.hp-listing--expired .hp-listing__details--primary .hp-term,
+.hp-listing--expired .hp-listing__task-date,
+.hp-listing--expired .hp-listing__task-city,
+.hp-listing--expired .hp-listing__category a,
+.hp-listing--expired .hp-custom-category-static {
+    /* Removes theme highlights/blue colors */
+    background-color: transparent !important;
+    border: none !important;
+
+    /* Make all fonts red as requested */
+    color: #cc0000 !important;
+    font-weight: normal !important;
+}
+
+/* Fade and disable the action button for expired requests */
+.hp-listing--expired .hp-listing__actions {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+}
+
+/* -----------------------------------------------------------------
+   5. ACCOUNT SETTINGS CUSTOMIZATION (WORKAROUND - APPLIES TO ALL ROLES)
+   
+   NOTE: This targets the settings page fields by position (nth-child) 
+   and is NOT restricted to the 'bee' user role due to missing body class.
+   ----------------------------------------------------------------- */
+
+/* --- A. ENABLE FLEXBOX & REORDER PROOF OF IDENTITY FIELD (6th child) --- */
+
+.hp-template--user-edit-settings-page .hp-form__fields {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 6th child (Proof of Identity) moves to the top */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6) {
+    order: -10;
+    /* Moves it to the very top */
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+/* 5th child (Proof of Enrollment) is styled but not reordered */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5) {
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+/* --- B. MACROS FOR SIMPLER READABILITY (Still using nth-child) --- */
+/* We'll use the .hp-template--user-edit-settings-page class to keep specificity high, 
+   instead of complex nested selectors. */
+
+/* Identity Field (6th child) */
+.bee-identity-field-6 {
+    /* To use this macro, replace .bee-identity-field-6 in the code below with:
+       .hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6) */
+}
+
+/* Enrollment Field (5th child) */
+.bee-enrollment-field-5 {
+    /* To use this macro, replace .bee-enrollment-field-5 in the code below with:
+       .hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5) */
+}
+
+
+/* --- C. HIDE ORIGINAL "(OPTIONAL)" TEXT FOR BOTH FIELDS --- */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6)>.hp-field__label small,
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5)>.hp-field__label small {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    content: none !important;
+}
+
+
+/* --- D. RED STATE (No File Uploaded) - Applies to both --- */
+
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:empty),
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty) {
+    border: 2px solid #d9534f;
+    background-color: #fdd;
+}
+
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:empty)>.hp-field__label,
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty)>.hp-field__label {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+/* Proof of Identity (6) Helper Text (RED) */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:empty) .hp-field--attachment-upload>label::after {
+    content: "Please upload your proof of identity to verify your account";
+    display: block;
+    font-size: 0.9em;
+    color: #d9534f;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+/* Proof of School Enrollment (5) Helper Text (RED) */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:empty) .hp-field--attachment-upload>label::after {
+    content: "Please upload your proof of school enrollment to complete your profile";
+    display: block;
+    font-size: 0.9em;
+    color: #d9534f;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+
+/* --- E. GREEN STATE (File Uploaded) - Applies to both --- */
+
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:not(:empty)),
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty)) {
+    border: 2px solid #5cb85c;
+    background-color: #f0fff0;
+}
+
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:not(:empty))>.hp-field__label,
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty))>.hp-field__label {
+    color: #5cb85c;
+    font-weight: bold;
+}
+
+/* Proof of Identity (6) Success Text (GREEN) */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(6):has(> .hp-field--attachment-upload > .hp-row:not(:empty)) .hp-field--attachment-upload>label::after {
+    content: "Thanks for sending your proof of identity, it is now being verified. You will receive a confirmation email in 2 working days";
+    display: block;
+    font-size: 0.9em;
+    color: #5cb85c;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+/* Proof of School Enrollment (5) Success Text (GREEN) */
+.hp-template--user-edit-settings-page .hp-form__field--attachment-upload:nth-child(5):has(> .hp-field--attachment-upload > .hp-row:not(:empty)) .hp-field--attachment-upload>label::after {
+    content: "Thanks for sending your proof of enrollment, it is now being verified. You will receive a confirmation email in 2 working days";
+    display: block;
+    font-size: 0.9em;
+    color: #5cb85c;
+    padding-top: 5px;
+    font-weight: normal;
+}
+
+
+/* --- F. VERIFIED STATE (Hide Field Entirely) --- */
+
+/* If the body has the verification class, hide both fields for ALL users on this page */
+body.user-doc-verified .hp-form__field--attachment-upload:nth-child(6),
+body.user-doc-verified .hp-form__field--attachment-upload:nth-child(5) {
+    display: none !important;
+}

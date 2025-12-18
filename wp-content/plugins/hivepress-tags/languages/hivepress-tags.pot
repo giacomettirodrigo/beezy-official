@@ -1,0 +1,78 @@
+# Copyright (C) 2024 HivePress
+# This file is distributed under the same license as the HivePress Tags plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: HivePress Tags 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hivepress-tags\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-05-31T13:20:07+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: hivepress-tags\n"
+
+#. Plugin Name of the plugin
+#: hivepress-tags.php
+msgid "HivePress Tags"
+msgstr ""
+
+#. Description of the plugin
+#: hivepress-tags.php
+msgid "Allow users to set listing tags."
+msgstr ""
+
+#. Author of the plugin
+#: hivepress-tags.php
+msgid "HivePress"
+msgstr ""
+
+#. Author URI of the plugin
+#: hivepress-tags.php
+msgid "https://hivepress.io/"
+msgstr ""
+
+#: includes/components/class-tag.php:85
+#: includes/components/class-tag.php:98
+#: includes/components/class-tag.php:152
+#: includes/configs/taxonomies.php:20
+msgid "Tags"
+msgstr ""
+
+#: includes/components/class-tag.php:128
+msgid "Priority"
+msgstr ""
+
+#: includes/configs/strings.php:14
+msgid "Listing Tags"
+msgstr ""
+
+#: includes/configs/taxonomies.php:21
+msgid "Tag"
+msgstr ""
+
+#: includes/configs/taxonomies.php:22
+msgid "Add Tag"
+msgstr ""
+
+#: includes/configs/taxonomies.php:23
+msgid "Edit Tag"
+msgstr ""
+
+#: includes/configs/taxonomies.php:24
+msgid "Update Tag"
+msgstr ""
+
+#: includes/configs/taxonomies.php:25
+msgid "View Tag"
+msgstr ""
+
+#: includes/configs/taxonomies.php:26
+msgid "Search Tags"
+msgstr ""
+
+#: includes/configs/taxonomies.php:27
+msgid "No tags found."
+msgstr ""

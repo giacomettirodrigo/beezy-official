@@ -1,0 +1,68 @@
+{
+    "packages": [
+        {
+            "name": "hivepress/hivepress-updates",
+            "version": "1.0.2",
+            "version_normalized": "1.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hivepress/hivepress-updates.git",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hivepress/hivepress-updates/zipball/1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "reference": "1fa0b5d14d26f8752f46cae6545f047a837c845e",
+                "shasum": ""
+            },
+            "time": "2020-07-09T21:58:03+00:00",
+            "type": "wordpress-plugin",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "Get updates for HivePress themes and extensions.",
+            "support": {
+                "issues": "https://github.com/hivepress/hivepress-updates/issues",
+                "source": "https://github.com/hivepress/hivepress-updates/tree/1.0.2"
+            },
+            "install-path": "../hivepress/hivepress-updates"
+        },
+        {
+            "name": "hivepress/hivetheme",
+            "version": "1.1.1",
+            "version_normalized": "1.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hivepress/hivetheme.git",
+                "reference": "26cbedfbe75781ee840e5ebeefc3d41e1f70e8c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hivepress/hivetheme/zipball/26cbedfbe75781ee840e5ebeefc3d41e1f70e8c3",
+                "reference": "26cbedfbe75781ee840e5ebeefc3d41e1f70e8c3",
+                "shasum": ""
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "phpcompatibility/phpcompatibility-wp": "^2.1.0",
+                "wp-coding-standards/wpcs": "~2.3.0"
+            },
+            "time": "2024-09-16T23:15:22+00:00",
+            "type": "wordpress-plugin",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "A framework for HivePress themes.",
+            "support": {
+                "source": "https://github.com/hivepress/hivetheme/tree/1.1.1"
+            },
+            "install-path": "../hivepress/hivetheme"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

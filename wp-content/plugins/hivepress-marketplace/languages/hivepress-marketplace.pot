@@ -1,0 +1,996 @@
+# Copyright (C) 2025 HivePress
+# This file is distributed under the same license as the HivePress Marketplace plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: HivePress Marketplace 1.3.15\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hivepress-marketplace\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-09-11T21:46:51+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: hivepress-marketplace\n"
+
+#. Plugin Name of the plugin
+#: hivepress-marketplace.php
+msgid "HivePress Marketplace"
+msgstr ""
+
+#. Description of the plugin
+#: hivepress-marketplace.php
+msgid "Allow users to sell listings."
+msgstr ""
+
+#. Author of the plugin
+#: hivepress-marketplace.php
+msgid "HivePress"
+msgstr ""
+
+#. Author URI of the plugin
+#: hivepress-marketplace.php
+msgid "https://hivepress.io/"
+msgstr ""
+
+#. translators: 1: plugin name, 2: extension name.
+#: hivepress-marketplace.php:37
+#, php-format
+msgid "The %1$s plugin must be installed and activated for %2$s to work."
+msgstr ""
+
+#: includes/blocks/class-vendor-statistics.php:140
+msgid "Revenue"
+msgstr ""
+
+#: includes/blocks/class-vendor-statistics.php:173
+msgid "Today"
+msgstr ""
+
+#: includes/blocks/class-vendor-statistics.php:178
+msgid "Yesterday"
+msgstr ""
+
+#. translators: %s: days number.
+#: includes/blocks/class-vendor-statistics.php:185
+#: includes/blocks/class-vendor-statistics.php:191
+#, php-format
+msgid "Last %s Days"
+msgstr ""
+
+#. translators: 1: tier name, 2: tier price.
+#: includes/components/class-marketplace.php:254
+#: includes/components/class-marketplace.php:1983
+#, php-format
+msgctxt "pricing tier format"
+msgid "%1$s (%2$s)"
+msgstr ""
+
+#. translators: 1: extra name, 2: extra price.
+#: includes/components/class-marketplace.php:302
+#: includes/components/class-marketplace.php:2010
+#, php-format
+msgctxt "price extra format"
+msgid "%1$s (%2$s)"
+msgstr ""
+
+#: includes/components/class-marketplace.php:316
+msgid "Discount"
+msgstr ""
+
+#: includes/components/class-marketplace.php:527
+#: includes/components/class-marketplace.php:1026
+#: includes/components/class-marketplace.php:2294
+msgid "Service Fee"
+msgstr ""
+
+#: includes/components/class-marketplace.php:527
+#: includes/components/class-marketplace.php:1049
+#: includes/components/class-marketplace.php:2374
+#: includes/controllers/class-marketplace.php:170
+msgid "Direct Payment"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1278
+msgid "Please fill in all required fields."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1573
+msgid "Billing Period"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1579
+msgid "day"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1580
+msgid "week"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1581
+msgid "month"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1582
+msgid "year"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1596
+#: includes/components/class-marketplace.php:1762
+#: includes/components/class-marketplace.php:2032
+#: includes/configs/settings.php:59
+msgid "Quantity"
+msgstr ""
+
+#. translators: %s: number.
+#: includes/components/class-marketplace.php:1607
+#, php-format
+msgid "Revisions: %s"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1616
+#: includes/configs/settings.php:228
+msgid "Revisions"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1617
+msgid "Set the maximum number of revisions."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1630
+#: includes/components/class-marketplace.php:1977
+msgid "Tiers"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1671
+#: includes/components/class-marketplace.php:2004
+#: includes/configs/woocommerce.php:22
+msgid "Extras"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1697
+msgctxt "price extra"
+msgid "Required"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1714
+#: includes/configs/settings.php:204
+msgid "Requirements"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1715
+msgid "Add custom fields to require specific details for the order."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1730
+msgid "Text"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1734
+msgid "Single Choice"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1735
+msgid "Multiple Choice"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1740
+msgid "Placeholder or semicolon-separated options."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1756
+#: includes/configs/settings.php:72
+msgid "Discounts"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1771
+msgid "Percentage"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1793
+#: includes/configs/settings.php:80
+msgid "Purchase Note"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1794
+msgid "Add a note that will be revealed to the buyer upon purchase."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1813
+msgid "File"
+msgstr ""
+
+#. translators: 1: subscription price, 2: subscription period.
+#: includes/components/class-marketplace.php:1843
+#, php-format
+msgid "%1$s / %2$s"
+msgstr ""
+
+#: includes/components/class-marketplace.php:1913
+msgid "Only buyers can send messages."
+msgstr ""
+
+#: includes/components/class-marketplace.php:1943
+msgid "Only buyers can submit reviews."
+msgstr ""
+
+#: includes/components/class-marketplace.php:2071
+msgid "Limit Exceeded"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2166
+msgid "Balance"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2237
+#: includes/configs/strings.php:20
+msgid "View Order"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2257
+#: templates/order/edit/block/order-status.php:8
+#: templates/order/view/order-status.php:8
+msgctxt "order"
+msgid "Delivered"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2363
+msgid "Commission"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2369
+msgid "Earnings"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2410
+msgid "Subscriptions"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2411
+msgid "Allow sellers to sell subscriptions"
+msgstr ""
+
+#: includes/components/class-marketplace.php:2637
+msgid "Placed Orders"
+msgstr ""
+
+#: includes/components/class-order.php:61
+msgid "Attachment"
+msgstr ""
+
+#. translators: %s: payment service.
+#: includes/components/class-payout.php:110
+#, php-format
+msgid "%s ID"
+msgstr ""
+
+#: includes/components/class-payout.php:148
+msgid "Country"
+msgstr ""
+
+#. translators: %s: order number.
+#: includes/components/class-payout.php:259
+#: includes/components/class-payout.php:282
+#: includes/controllers/class-marketplace.php:694
+#, php-format
+msgid "Order %s"
+msgstr ""
+
+#. translators: %s: payment service.
+#: includes/components/class-payout.php:516
+#, php-format
+msgid "Proceed to %s"
+msgstr ""
+
+#: includes/components/class-payout.php:532
+#: includes/configs/meta-boxes.php:31
+#: includes/forms/class-order-refund.php:50
+#: includes/models/class-payout.php:67
+msgid "Amount"
+msgstr ""
+
+#: includes/components/class-payout.php:536
+#: includes/configs/taxonomies.php:23
+#: includes/models/class-payout.php:75
+msgid "Method"
+msgstr ""
+
+#: includes/configs/meta-boxes.php:59
+#: includes/configs/settings.php:321
+msgid "Minimum Amount"
+msgstr ""
+
+#: includes/configs/meta-boxes.php:70
+#: includes/configs/settings.php:115
+#: includes/configs/settings.php:151
+msgid "Commission Rate"
+msgstr ""
+
+#: includes/configs/meta-boxes.php:71
+#: includes/configs/settings.php:116
+msgid "Set the commission percentage that will be charged on every purchase."
+msgstr ""
+
+#: includes/configs/meta-boxes.php:80
+#: includes/configs/settings.php:125
+#: includes/configs/settings.php:161
+msgid "Commission Fee"
+msgstr ""
+
+#: includes/configs/meta-boxes.php:81
+#: includes/configs/settings.php:126
+msgid "Set a fixed commission fee that will be charged on every purchase."
+msgstr ""
+
+#: includes/configs/meta-boxes.php:90
+#: includes/templates/class-vendor-dashboard-page.php:95
+msgid "Statistics"
+msgstr ""
+
+#: includes/configs/post-types.php:22
+msgid "Payout"
+msgstr ""
+
+#: includes/configs/post-types.php:23
+#: includes/configs/post-types.php:26
+msgid "Add Payout"
+msgstr ""
+
+#: includes/configs/post-types.php:24
+msgctxt "payout"
+msgid "Add New"
+msgstr ""
+
+#: includes/configs/post-types.php:25
+msgid "Edit Payout"
+msgstr ""
+
+#: includes/configs/post-types.php:28
+msgid "Search Payouts"
+msgstr ""
+
+#: includes/configs/post-types.php:29
+#: includes/configs/post-types.php:30
+msgid "No payouts found."
+msgstr ""
+
+#: includes/configs/settings.php:17
+#: includes/configs/settings.php:110
+msgid "Selling"
+msgstr ""
+
+#: includes/configs/settings.php:23
+msgid "Select categories where selling should be available, or leave empty for all categories."
+msgstr ""
+
+#: includes/configs/settings.php:33
+msgid "Allow sellers to set pricing tiers"
+msgstr ""
+
+#: includes/configs/settings.php:39
+msgid "Allow sellers to add price extras"
+msgstr ""
+
+#: includes/configs/settings.php:45
+msgid "Allow sellers to require price extras"
+msgstr ""
+
+#: includes/configs/settings.php:52
+msgid "Include price extras in the taxable amount"
+msgstr ""
+
+#: includes/configs/settings.php:60
+msgid "Allow sellers to limit quantity"
+msgstr ""
+
+#: includes/configs/settings.php:66
+msgid "Allow buyers to select quantity"
+msgstr ""
+
+#: includes/configs/settings.php:73
+msgid "Allow sellers to set quantity-based discounts"
+msgstr ""
+
+#: includes/configs/settings.php:81
+msgid "Allow sellers to add purchase notes"
+msgstr ""
+
+#: includes/configs/settings.php:87
+#: includes/configs/settings.php:237
+msgid "Attachments"
+msgstr ""
+
+#: includes/configs/settings.php:88
+msgid "Require file attachments"
+msgstr ""
+
+#: includes/configs/settings.php:89
+msgid "Check this option to require sellers to attach files for sale."
+msgstr ""
+
+#: includes/configs/settings.php:95
+#: includes/configs/settings.php:246
+msgid "Allowed File Types"
+msgstr ""
+
+#: includes/configs/settings.php:133
+msgid "Taxes"
+msgstr ""
+
+#: includes/configs/settings.php:134
+msgid "Include taxes in the balance calculations"
+msgstr ""
+
+#: includes/configs/settings.php:146
+msgid "Buying"
+msgstr ""
+
+#: includes/configs/settings.php:152
+msgid "Set the commission percentage that will be added to every purchase."
+msgstr ""
+
+#: includes/configs/settings.php:162
+msgid "Set a fixed commission fee that will be added to every purchase."
+msgstr ""
+
+#: includes/configs/settings.php:178
+msgid "Restrictions"
+msgstr ""
+
+#: includes/configs/settings.php:184
+msgid "Restrict messages to buyers"
+msgstr ""
+
+#: includes/configs/settings.php:191
+msgid "Restrict reviews to buyers"
+msgstr ""
+
+#: includes/configs/settings.php:199
+msgid "Processing"
+msgstr ""
+
+#: includes/configs/settings.php:205
+msgid "Allow sellers to add requirements"
+msgstr ""
+
+#: includes/configs/settings.php:206
+msgid "Check this option to allow sellers to add custom fields to require specific details for the order."
+msgstr ""
+
+#: includes/configs/settings.php:213
+msgid "Share the buyer details with sellers"
+msgstr ""
+
+#: includes/configs/settings.php:214
+msgid "Check this option to share personal details, such as the buyer address, email and phone number."
+msgstr ""
+
+#: includes/configs/settings.php:220
+msgid "Delivery"
+msgstr ""
+
+#: includes/configs/settings.php:221
+msgid "Require manual delivery"
+msgstr ""
+
+#: includes/configs/settings.php:222
+msgid "Check this option to require sellers to mark orders as delivered."
+msgstr ""
+
+#: includes/configs/settings.php:229
+msgid "Allow sellers to limit revisions"
+msgstr ""
+
+#: includes/configs/settings.php:230
+msgid "Check this option to allow sellers to set the maximum number of revisions."
+msgstr ""
+
+#: includes/configs/settings.php:238
+msgid "Allow file attachments"
+msgstr ""
+
+#: includes/configs/settings.php:239
+msgid "Check this option to allow sellers to attach files to delivered orders."
+msgstr ""
+
+#: includes/configs/settings.php:255
+msgid "Completion"
+msgstr ""
+
+#: includes/configs/settings.php:256
+msgid "Require manual completion"
+msgstr ""
+
+#: includes/configs/settings.php:257
+msgid "Check this option to require buyers to mark orders as completed."
+msgstr ""
+
+#: includes/configs/settings.php:264
+msgid "Completion Period"
+msgstr ""
+
+#: includes/configs/settings.php:265
+msgid "Set the number of days after which an order is completed automatically."
+msgstr ""
+
+#: includes/configs/settings.php:274
+#: includes/configs/settings.php:279
+msgid "Refunds"
+msgstr ""
+
+#: includes/configs/settings.php:280
+msgid "Select an option to allow sellers to refund orders. Refunds may require manual payment processing depending on the payment gateway."
+msgstr ""
+
+#: includes/configs/settings.php:285
+msgctxt "refunds"
+msgid "Partial and Full"
+msgstr ""
+
+#: includes/configs/settings.php:286
+msgctxt "refunds"
+msgid "Full Only"
+msgstr ""
+
+#: includes/configs/settings.php:291
+msgid "Disputes"
+msgstr ""
+
+#: includes/configs/settings.php:292
+msgid "Allow disputing orders"
+msgstr ""
+
+#: includes/configs/settings.php:308
+#: includes/configs/settings.php:313
+msgid "Requests"
+msgstr ""
+
+#: includes/configs/settings.php:314
+msgid "Allow requesting payouts"
+msgstr ""
+
+#: includes/configs/settings.php:329
+msgid "Payout System"
+msgstr ""
+
+#: includes/configs/settings.php:330
+msgid "Select a system used for processing payouts. Each third-party system requires the API credentials that you can set in the Integrations section."
+msgstr ""
+
+#: includes/configs/settings.php:331
+msgctxt "system"
+msgid "Manual"
+msgstr ""
+
+#: includes/configs/settings.php:342
+msgctxt "system"
+msgid "Direct"
+msgstr ""
+
+#: includes/configs/strings.php:14
+msgid "Files"
+msgstr ""
+
+#: includes/configs/strings.php:15
+msgid "Get Now"
+msgstr ""
+
+#: includes/configs/strings.php:16
+msgid "Contact Buyer"
+msgstr ""
+
+#: includes/configs/strings.php:17
+msgid "Contact Seller"
+msgstr ""
+
+#: includes/configs/strings.php:18
+msgid "Order"
+msgstr ""
+
+#: includes/configs/strings.php:19
+msgid "Orders"
+msgstr ""
+
+#: includes/configs/strings.php:21
+msgid "Payouts"
+msgstr ""
+
+#: includes/configs/strings.php:22
+msgid "Listing Sold Out"
+msgstr ""
+
+#: includes/configs/strings.php:23
+msgid "Listing Order Form"
+msgstr ""
+
+#: includes/configs/taxonomies.php:22
+msgid "Methods"
+msgstr ""
+
+#: includes/configs/taxonomies.php:24
+msgid "Add Method"
+msgstr ""
+
+#: includes/configs/taxonomies.php:25
+msgid "Edit Method"
+msgstr ""
+
+#: includes/configs/taxonomies.php:26
+msgid "Update Method"
+msgstr ""
+
+#: includes/configs/taxonomies.php:27
+msgid "View Method"
+msgstr ""
+
+#: includes/configs/taxonomies.php:28
+msgid "Parent Method"
+msgstr ""
+
+#: includes/configs/taxonomies.php:29
+msgid "Search Methods"
+msgstr ""
+
+#: includes/configs/taxonomies.php:30
+msgid "No methods found."
+msgstr ""
+
+#: includes/configs/woocommerce.php:16
+msgid "Tier"
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:119
+#: includes/templates/class-vendor-dashboard-page.php:30
+msgid "Dashboard"
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:274
+msgid "Order delivered"
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:392
+msgid "Delivery rejected"
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:619
+msgid "Received Orders"
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:839
+#: includes/controllers/class-marketplace.php:851
+msgid "Product not found."
+msgstr ""
+
+#: includes/controllers/class-marketplace.php:846
+msgid "You can't buy your own listings."
+msgstr ""
+
+#: includes/controllers/class-payout.php:129
+msgid "You've already requested a payout."
+msgstr ""
+
+#. translators: %s: amount.
+#: includes/controllers/class-payout.php:153
+#, php-format
+msgid "You can't pay out less than %s."
+msgstr ""
+
+#. translators: %s: amount.
+#: includes/controllers/class-payout.php:159
+#, php-format
+msgid "You can't pay out more than %s."
+msgstr ""
+
+#. translators: %s: payment service.
+#: includes/controllers/class-payout.php:300
+#, php-format
+msgid "%s API key is missing or invalid."
+msgstr ""
+
+#. translators: %s: payment service.
+#: includes/controllers/class-payout.php:369
+#, php-format
+msgid "%s account is not accessible."
+msgstr ""
+
+#. translators: %s: payment service.
+#: includes/controllers/class-payout.php:424
+#, php-format
+msgid "%s authentication failed."
+msgstr ""
+
+#: includes/emails/class-listing-sellout.php:31
+msgid "This email is sent to users when a listing is sold out."
+msgstr ""
+
+#: includes/emails/class-listing-sellout.php:50
+#, php-format
+msgid "Hi, %user_name%! Your listing \"%listing_title%\" has been sold out, click on the following link to update it: %listing_url%"
+msgstr ""
+
+#: includes/emails/class-order-complete.php:30
+#: includes/emails/class-order-complete.php:49
+msgid "Order Completed"
+msgstr ""
+
+#: includes/emails/class-order-complete.php:31
+msgid "This email is sent to users when an order is completed."
+msgstr ""
+
+#: includes/emails/class-order-complete.php:50
+#, php-format
+msgid "Hi, %user_name%! The order %order_number% of %order_amount% has been completed, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-order-deliver.php:30
+#: includes/emails/class-order-deliver.php:49
+msgid "Order Delivered"
+msgstr ""
+
+#: includes/emails/class-order-deliver.php:31
+msgid "This email is sent to users when an order is delivered."
+msgstr ""
+
+#: includes/emails/class-order-deliver.php:50
+#, php-format
+msgid "Hi, %user_name%! The order %order_number% has been delivered, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-order-dispute.php:30
+msgid "Order Disputed"
+msgstr ""
+
+#: includes/emails/class-order-dispute.php:31
+#, php-format
+msgid "Order %order_number% %order_url% has been disputed with the following details: %dispute_details%"
+msgstr ""
+
+#: includes/emails/class-order-receive.php:30
+#: includes/emails/class-order-receive.php:49
+msgid "Order Received"
+msgstr ""
+
+#: includes/emails/class-order-receive.php:31
+msgid "This email is sent to users when an order is received."
+msgstr ""
+
+#: includes/emails/class-order-receive.php:50
+#, php-format
+msgid "Hi, %user_name%! You've received a new order %order_number% of %order_amount%, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-order-refund-fail.php:30
+msgid "Refund Failed"
+msgstr ""
+
+#: includes/emails/class-order-refund-fail.php:31
+#, php-format
+msgid "Refund for order %order_number% %order_url% couldn't be processed for the following reason: %fail_reason%"
+msgstr ""
+
+#: includes/emails/class-order-refund-request.php:30
+msgid "Refund Requested"
+msgstr ""
+
+#: includes/emails/class-order-refund-request.php:31
+#, php-format
+msgid "A refund for order %order_number% has been requested, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-order-refund.php:30
+#: includes/emails/class-order-refund.php:49
+msgid "Order Refunded"
+msgstr ""
+
+#: includes/emails/class-order-refund.php:31
+msgid "This email is sent to users when an order is refunded."
+msgstr ""
+
+#: includes/emails/class-order-refund.php:50
+#, php-format
+msgid "Hi, %user_name%! The order %order_number% of %order_amount% has been refunded, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-order-reject.php:30
+msgid "Order Rejected"
+msgstr ""
+
+#: includes/emails/class-order-reject.php:31
+msgid "This email is sent to users when the order delivery is rejected."
+msgstr ""
+
+#: includes/emails/class-order-reject.php:49
+msgid "Delivery Rejected"
+msgstr ""
+
+#: includes/emails/class-order-reject.php:50
+#, php-format
+msgid "Hi, %user_name%! The delivery of the order %order_number% has been rejected, click on the following link to view it: %order_url%"
+msgstr ""
+
+#: includes/emails/class-payout-complete.php:30
+#: includes/emails/class-payout-complete.php:49
+msgid "Payout Completed"
+msgstr ""
+
+#: includes/emails/class-payout-complete.php:31
+msgid "This email is sent to users when a payout is completed."
+msgstr ""
+
+#: includes/emails/class-payout-complete.php:50
+#, php-format
+msgid "Hi, %user_name%! Your payout of %payout_amount% via %payout_method% has been completed, click on the following link to view it: %payouts_url%"
+msgstr ""
+
+#: includes/emails/class-payout-fail.php:30
+msgid "Payout Failed"
+msgstr ""
+
+#: includes/emails/class-payout-fail.php:31
+#, php-format
+msgid "Payout for order %order_number% %order_url% couldn't be processed for the following reason: %fail_reason%"
+msgstr ""
+
+#: includes/emails/class-payout-request.php:30
+msgid "Payout Requested"
+msgstr ""
+
+#: includes/emails/class-payout-request.php:31
+msgid "A new payout of %payout_amount% via %payout_method% has been requested, click on the following link to view it: %payout_url%"
+msgstr ""
+
+#: includes/forms/class-listing-buy.php:47
+msgid "Buy Now"
+msgstr ""
+
+#: includes/forms/class-order-complete.php:46
+msgid "Are you sure you want to complete this order?"
+msgstr ""
+
+#: includes/forms/class-order-complete.php:50
+#: includes/templates/class-order-footer-block.php:70
+msgid "Complete Order"
+msgstr ""
+
+#: includes/forms/class-order-deliver.php:46
+msgid "Are you sure you want to mark this order as delivered?"
+msgstr ""
+
+#: includes/forms/class-order-deliver.php:51
+#: includes/forms/class-order-reject.php:51
+msgid "Note"
+msgstr ""
+
+#: includes/forms/class-order-deliver.php:60
+#: includes/templates/class-order-footer-block.php:42
+msgid "Deliver Order"
+msgstr ""
+
+#: includes/forms/class-order-dispute.php:30
+#: includes/templates/class-order-footer-block.php:84
+msgid "Dispute Order"
+msgstr ""
+
+#: includes/forms/class-order-dispute.php:48
+msgid "Please provide details of your complaint and indicate the desired outcome."
+msgstr ""
+
+#: includes/forms/class-order-dispute.php:49
+msgid "Your complaint has been submitted."
+msgstr ""
+
+#: includes/forms/class-order-dispute.php:64
+msgid "Submit Complaint"
+msgstr ""
+
+#: includes/forms/class-order-refund.php:59
+msgid "Reason"
+msgstr ""
+
+#: includes/forms/class-order-refund.php:69
+#: includes/forms/class-payout-request.php:65
+msgid "Submit Request"
+msgstr ""
+
+#: includes/forms/class-order-reject.php:46
+msgid "Are you sure you want to reject the order delivery?"
+msgstr ""
+
+#: includes/forms/class-order-reject.php:61
+#: includes/templates/class-order-footer-block.php:56
+msgid "Reject Delivery"
+msgstr ""
+
+#: includes/forms/class-payout-cancel.php:46
+msgid "Are you sure you want to cancel this payout request?"
+msgstr ""
+
+#: includes/forms/class-payout-cancel.php:51
+msgid "Cancel Request"
+msgstr ""
+
+#: includes/forms/class-payout-request.php:46
+msgid "Your payout request has been submitted."
+msgstr ""
+
+#: includes/models/class-payout.php:49
+msgctxt "payout"
+msgid "Completed"
+msgstr ""
+
+#: includes/models/class-payout.php:51
+msgctxt "payout"
+msgid "Failed"
+msgstr ""
+
+#: includes/models/class-payout.php:52
+msgctxt "payout"
+msgid "Pending"
+msgstr ""
+
+#: includes/templates/class-order-edit-page.php:56
+msgid "Header"
+msgstr ""
+
+#: includes/templates/class-order-edit-page.php:62
+msgid "Notes"
+msgstr ""
+
+#: includes/templates/class-order-edit-page.php:76
+msgid "Footer"
+msgstr ""
+
+#: includes/templates/class-order-footer-block.php:98
+msgid "Refund Order"
+msgstr ""
+
+#: includes/templates/class-payout-view-block.php:84
+msgid "Cancel Payout"
+msgstr ""
+
+#: includes/templates/class-vendor-dashboard-page.php:68
+msgid "Request a Payout"
+msgstr ""
+
+#: templates/order/edit/page/order-deliver-link.php:7
+msgid "Deliver"
+msgstr ""
+
+#: templates/order/edit/page/order-refund-link.php:7
+msgid "Refund"
+msgstr ""
+
+#. translators: %s: user name.
+#: templates/order/view/page/order-buyer.php:15
+#, php-format
+msgid "Purchased by %s"
+msgstr ""
+
+#: templates/order/view/page/order-complete-link.php:7
+msgid "Complete"
+msgstr ""
+
+#. translators: %s: date.
+#: templates/order/view/page/order-created-date.php:9
+#, php-format
+msgid "Placed on %s"
+msgstr ""
+
+#: templates/order/view/page/order-dispute-link.php:7
+msgid "Dispute"
+msgstr ""
+
+#: templates/order/view/page/order-reject-link.php:7
+msgid "Reject"
+msgstr ""
+
+#. translators: %s: vendor name.
+#: templates/order/view/page/order-vendor.php:10
+#, php-format
+msgid "Purchased from %s"
+msgstr ""
+
+#: templates/payout/view/block/payout-cancel-link.php:7
+msgid "Cancel"
+msgstr ""

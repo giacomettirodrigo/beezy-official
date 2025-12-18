@@ -1,0 +1,18 @@
+<?php
+the_post();
+
+get_header();
+?>
+<div class="row">
+	<main class="col-sm-8 col-sm-offset-2 col-xs-12">
+		<?php
+		get_template_part( 'templates/post-single' );
+
+		get_template_part( 'templates/post/single/post-navigation' );
+
+		comments_template();
+		?>
+	</main>
+</div>
+<?php
+get_footer();
