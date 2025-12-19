@@ -6,6 +6,7 @@
 
 # 2. UN-IGNORE Your Work (The "Paint")
 !/wp-content/
+!.env
 
 # 3. RE-IGNORE Junk inside your work
 /wp-content/uploads/
