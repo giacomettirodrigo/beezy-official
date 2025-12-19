@@ -242,12 +242,9 @@ function render_beezy_role_distribution_widget()
 {
 	$counts = count_users();
 
-	// Slugs mapping (Bee = hp_vendor, Requestor = subscriber/customer)
-	$bee_count = isset($counts['avail_roles']['hp_vendor']) ? $counts['avail_roles']['hp_vendor'] : 0;
-	$requestor_count = isset($counts['avail_roles']['subscriber']) ? $counts['avail_roles']['subscriber'] : 0;
-	$customer_count = isset($counts['avail_roles']['customer']) ? $counts['avail_roles']['customer'] : 0;
-
-	$total_requestors = $requestor_count + $customer_count;
+	// Role slugs as confirmed by user
+	$bee_count = isset($counts['avail_roles']['bee']) ? $counts['avail_roles']['bee'] : 0;
+	$requestor_count = isset($counts['avail_roles']['requestor']) ? $counts['avail_roles']['requestor'] : 0;
 
 	?>
 	<div style="display:flex; justify-content: space-around; align-items: center; padding: 20px 0; text-align: center;">
@@ -258,7 +255,7 @@ function render_beezy_role_distribution_widget()
 		<div style="width:1px; height: 60px; background:#ddd;"></div>
 		<div style="flex:1;">
 			<span style="display:block; font-size: 32px; font-weight: bold; color: #673AB7;">REQUESTORS</span>
-			<span style="display:block; font-size: 48px; line-height: 1;"><?php echo esc_html($total_requestors); ?></span>
+			<span style="display:block; font-size: 48px; line-height: 1;"><?php echo esc_html($requestor_count); ?></span>
 		</div>
 	</div>
 	<p style="text-align: center; color: #666; font-style: italic;">Total users:
