@@ -15,6 +15,10 @@ jobs:
       with:
         fetch-depth: 0
 
+    # 👇 THIS IS THE KEY TO SPEED (Fixes the "uploading everything" bug)
+    - name: 🕰️ Restore Timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
     - name: 📂 Install LFTP
       run: sudo apt-get install lftp
 
@@ -31,8 +35,12 @@ jobs:
                --exclude-glob .git* \
                --exclude-glob .github/ \
                --exclude-glob .gitignore \
+               --exclude-glob .DS_Store \
+               --exclude-glob .env \
                --exclude-glob node_modules/ \
                --exclude-glob uploads/ \
                --exclude-glob cache/ \
+               --exclude-glob upgrade/ \
+               --exclude-glob backups/ \
                ./wp-content/ /public_html/wp-content/;
         quit"
