@@ -1,0 +1,38 @@
+name: 🎯 Paint-Only Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: ⚡ Sync Plugins & Themes
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 📂 Install LFTP
+      run: sudo apt-get install lftp
+
+    - name: 🚀 Sync Content Folder
+      run: |
+        lftp -e "
+        set ftp:ssl-allow yes;
+        set ssl:verify-certificate no;
+        open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }};
+        mirror --reverse \
+               --delete \
+               --parallel=5 \
+               --verbose \
+               --exclude-glob .git* \
+               --exclude-glob .github/ \
+               --exclude-glob .gitignore \
+               --exclude-glob node_modules/ \
+               --exclude-glob uploads/ \
+               --exclude-glob cache/ \
+               ./wp-content/ /public_html/wp-content/;
+        quit"
