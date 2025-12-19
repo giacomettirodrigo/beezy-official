@@ -16,6 +16,7 @@
 /wp-content/ai1wm-backups/
 /wp-content/speedycache-config/
 /wp-content/index.php
+/wp-content/plugins/hivepress-marketplace/vendor/stripe/stripe-php/
 *.zip
 *.sql
 *.log
