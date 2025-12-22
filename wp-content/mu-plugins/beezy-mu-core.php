@@ -9,6 +9,8 @@
 if (!defined('ABSPATH'))
     exit;
 
+use HivePress\Helpers as hp;
+
 /**
  * Beezy Core Class
  */
@@ -47,6 +49,9 @@ final class Beezy_Core
 
         // Module 4: Form & Model Integrations
         $this->init_integrations();
+
+        // Module 5: Admin Tweaks
+        $this->init_admin();
     }
 
     /* ---------------------------------------------------------
@@ -62,10 +67,10 @@ final class Beezy_Core
     {
         if (is_user_logged_in()) {
             $user = wp_get_current_user();
-            if (!empty($user->roles)) {
+            if ($user->roles) {
                 $classes[] = 'user-role-' . $user->roles[0];
             }
-            if (get_user_meta($user->ID, 'hp_doc_verified', true) == 1) {
+            if ($this->is_user_verified($user->ID)) {
                 $classes[] = 'user-doc-verified';
             }
         }
@@ -98,6 +103,18 @@ final class Beezy_Core
     {
         add_action('wp_head', [$this, 'render_global_ui_styles']);
         add_action('wp_footer', [$this, 'render_ui_js_tweaks'], 110);
+
+        // Vendor Profile Page (Centralization)
+        add_filter('hivepress/v1/templates/vendor_view_page/blocks', [$this, 'modify_vendor_view_blocks'], 1000, 2);
+
+        // Relocate View Profile link
+        add_filter('hivepress/v1/templates/user_edit_settings_page/blocks', [$this, 'remove_vendor_view_link'], 2000, 2);
+        add_filter('hivepress/v1/menus/user_account', [$this, 'add_vendor_view_to_menu'], 1000);
+
+        // Remove Hourly Rate
+        add_filter('hivepress/v1/forms/user_update', [$this, 'remove_hourly_rate_field'], 1000);
+
+        // Multi-language Switcher (via JS for better reliability)
     }
 
     public function render_global_ui_styles()
@@ -108,12 +125,150 @@ final class Beezy_Core
             .hp-menu--site-header .hp-menu__item--listing-submit {
                 display: none !important;
             }
+
+            /* Centralize Vendor Profile Page Sidebar */
+            .hp-vendor--view-page .hp-page__content {
+                display: none !important;
+            }
+
+            .hp-vendor--view-page .hp-page__sidebar {
+                margin: 0 auto !important;
+                float: none !important;
+                flex: 0 0 100% !important;
+                max-width: 500px !important;
+            }
+
+            .hp-vendor--view-page .hp-row {
+                justify-content: center !important;
+            }
+
+            /* Mandatory Docs Alert Styling */
+            .beezy-mandatory-alert {
+                background: #fff5f5 !important;
+                border: 2px solid #feb2b2 !important;
+                color: #c53030 !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                margin-bottom: 20px !important;
+                text-align: center !important;
+                font-weight: bold !important;
+                font-size: 1.1em !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+                border-left: 5px solid #f56565 !important;
+            }
+
+            .beezy-verified-header {
+                margin-bottom: 20px !important;
+            }
+
+            .beezy-field-error {
+                border: 2px solid #feb2b2 !important;
+                background: #fffafa !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .beezy-field-error label {
+                color: #c53030 !important;
+                font-weight: bold !important;
+            }
+
+            .beezy-field-success {
+                border: 2px solid #c6f6d5 !important;
+                background: #f0fff4 !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .beezy-field-success label {
+                color: #2f855a !important;
+                font-weight: bold !important;
+            }
+
+            /* Hide View Profile button from settings footer */
+            .hp-form__action--vendor-view {
+                display: none !important;
+            }
+
+            /* Hide Hourly Rate field from settings */
+            .hp-form__field--hourly-rate,
+            .hp-form__field--hp-hourly-rate {
+                display: none !important;
+            }
+
+            /* Language Switcher Styling */
+            .beezy-menu-item-switcher {
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .beezy-language-switcher {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-left: 15px;
+                padding-left: 15px;
+                border-left: 1px solid rgba(0, 0, 0, 0.1);
+                height: 24px;
+            }
+
+            .beezy-language-item {
+                display: flex;
+                align-items: center;
+                text-decoration: none !important;
+                opacity: 0.6;
+                transition: all 0.2s ease;
+                filter: grayscale(20%);
+            }
+
+            .beezy-language-item:hover,
+            .beezy-language-item.active {
+                opacity: 1;
+                filter: grayscale(0%);
+                transform: translateY(-1px);
+            }
+
+            .beezy-language-item img {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                object-fit: cover;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border: 1px solid #fff;
+            }
+
+            @media screen and (max-width: 768px) {
+                .beezy-language-switcher {
+                    margin-left: 0;
+                    padding-left: 0;
+                    border-left: none;
+                    margin-top: 10px;
+                    justify-content: center;
+                }
+            }
         </style>
         <?php
     }
 
     public function render_ui_js_tweaks()
     {
+        ?>
+        <script>
+            jQuery(document).ready(function ($) {
+                // Inject Language Switcher
+                const switcherHtml = `<?php echo addslashes($this->render_language_switcher_html()); ?>`;
+                const $menu = $('.hp-menu--site-header > ul');
+                if ($menu.length && !$('.beezy-language-switcher').length) {
+                    $menu.append(`<li class="hp-menu__item beezy-menu-item-switcher">${switcherHtml}</li>`);
+                } else if ($('.header-navbar__actions').length && !$('.beezy-language-switcher').length) {
+                    $('.header-navbar__actions').append(switcherHtml);
+                }
+            });
+        </script>
+        <?php
+
         if (is_user_logged_in() && current_user_can('bee')) {
             ?>
             <script>
@@ -147,10 +302,40 @@ final class Beezy_Core
             ?>
             <script>
                 jQuery(document).ready(function ($) {
-                    // Change user name link to go to account settings
-                    const $userLink = $('.hp-menu--site-header .hp-menu__item--user-account');
-                    if ($userLink.length) {
-                        $userLink.attr('href', '<?php echo esc_url(home_url('/account/settings/')); ?>');
+                    const updateAccountLink = function () {
+                        const settingsUrl = '<?php echo esc_url(home_url('/account/settings/')); ?>';
+                        const accountUrl = '<?php echo esc_url(home_url('/account/')); ?>';
+
+                        // Target the specific user account menu item in header and mobile menu
+                        $('a.hp-menu__item--user-account, .hp-menu__item--user-account a').each(function () {
+                            $(this).attr('href', settingsUrl);
+                        });
+
+                        // Fallback: any link that points exactly to /account/
+                        $('a[href="' + accountUrl + '"], a[href="' + accountUrl.slice(0, -1) + '"]').each(function () {
+                            $(this).attr('href', settingsUrl);
+                        });
+                    };
+
+                    updateAccountLink();
+                    // Handle dynamic updates (e.g. if header is re-rendered via AJAX)
+                    if (window.MutationObserver) {
+                        new MutationObserver(updateAccountLink).observe(document.body, { childList: true, subtree: true });
+                    }
+
+                    // Top Nav Verification Badge
+                    const isVerified = <?php echo $this->is_user_verified(get_current_user_id()) ? 'true' : 'false'; ?>;
+                    if (isVerified) {
+                        const injectNavBadge = function () {
+                            const $navUser = $('.hp-menu__item--user-account span, .hp-menu__item--user-login span');
+                            if ($navUser.length && !$('.beezy-nav-verified').length) {
+                                $navUser.append('<i class="fas fa-check-circle beezy-nav-verified" style="color: #48bb78; margin-left: 5px;" title="Identity Verified"></i>');
+                            }
+                        };
+                        injectNavBadge();
+                        if (window.MutationObserver) {
+                            new MutationObserver(injectNavBadge).observe(document.body, { childList: true, subtree: true });
+                        }
                     }
                 });
             </script>
@@ -161,6 +346,285 @@ final class Beezy_Core
         if (strpos($_SERVER['REQUEST_URI'], '/requests/') !== false) {
             $this->render_request_countdown_script();
         }
+
+        // Mandatory Docs Highlighting
+        if (strpos($_SERVER['REQUEST_URI'], '/account/settings/') !== false) {
+            $this->render_mandatory_docs_js();
+        }
+    }
+
+    /**
+     * Consolidate Vendor View modifications: Centralization.
+     */
+    public function modify_vendor_view_blocks($blocks, $template)
+    {
+        $blocks = $this->modify_vendor_template_blocks_recursive($blocks);
+        return $blocks;
+    }
+
+    /**
+     * Helper to recursively modify vendor template blocks.
+     */
+    private function modify_vendor_template_blocks_recursive($blocks)
+    {
+        foreach ($blocks as $id => &$block) {
+            // 1. Centralize: Remove the page content (listings)
+            if ($id === 'page_content') {
+                $block['blocks'] = [];
+            }
+
+            // 2. Centralize: Adjust sidebar classes to allow centering
+            if ($id === 'page_sidebar') {
+                if (isset($block['attributes']['class']) && is_array($block['attributes']['class'])) {
+                    foreach ($block['attributes']['class'] as $key => $class) {
+                        if ($class === 'hp-col-sm-4') {
+                            $block['attributes']['class'][$key] = 'hp-col-sm-12';
+                        }
+                    }
+                }
+            }
+
+            // Recurse
+            if (isset($block['blocks']) && is_array($block['blocks'])) {
+                $block['blocks'] = $this->modify_vendor_template_blocks_recursive($block['blocks']);
+            }
+        }
+        return $blocks;
+    }
+
+    /**
+     * Remove the redundant "View Profile" link from the bottom of the settings page.
+     */
+    public function remove_vendor_view_link($blocks, $template)
+    {
+        return hp\merge_trees($blocks, [
+            'user_update_form' => [
+                'footer' => [
+                    'form_actions' => [
+                        'blocks' => [
+                            'vendor_view_link' => [
+                                'type' => 'content',
+                                'content' => '',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Add "View Profile" to the user account menu.
+     */
+    public function add_vendor_view_to_menu($menu)
+    {
+        if (isset($menu['items']['user_edit_settings'])) {
+            $menu['items']['user_edit_settings']['_order'] = 1;
+        }
+
+        $user_id = get_current_user_id();
+        if ($user_id) {
+            $vendor_id = get_posts([
+                'post_type' => 'hp_vendor',
+                'author' => $user_id,
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'numberposts' => 1,
+            ]);
+
+            if ($vendor_id) {
+                $vendor_id = $vendor_id[0];
+                $menu['items']['vendor_view'] = [
+                    'label' => 'View Profile',
+                    'url' => get_permalink($vendor_id),
+                    '_order' => 2,
+                ];
+            }
+        }
+
+        return $menu;
+    }
+
+    /**
+     * Remove the "Hourly rate" field from the user update form.
+     */
+    public function remove_hourly_rate_field($form)
+    {
+        unset($form['fields']['hourly_rate']);
+        unset($form['fields']['hp_hourly_rate']);
+        return $form;
+    }
+
+    /**
+     * Render the language switcher HTML with UK and NL flags.
+     */
+    private function render_language_switcher_html()
+    {
+        $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        // Basic detection for TranslatePress (can be refined)
+        $is_dutch = strpos($_SERVER['REQUEST_URI'], '/nl/') !== false;
+
+        // Circular Flags via reliable CDN (Flagpedia)
+        $uk_flag = 'https://flagcdn.com/w40/gb.png';
+        $nl_flag = 'https://flagcdn.com/w40/nl.png';
+
+        ob_start();
+        ?>
+        <div class="beezy-language-switcher">
+            <a href="<?php echo esc_url(str_replace('/nl/', '/', $current_url)); ?>"
+                class="beezy-language-item <?php echo !$is_dutch ? 'active' : ''; ?>" title="English">
+                <img src="<?php echo $uk_flag; ?>" alt="English">
+            </a>
+            <a href="<?php echo esc_url($is_dutch ? $current_url : home_url('/nl' . $_SERVER['REQUEST_URI'])); ?>"
+                class="beezy-language-item <?php echo $is_dutch ? 'active' : ''; ?>" title="Dutch">
+                <img src="<?php echo $nl_flag; ?>" alt="Dutch">
+            </a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Add mandatory documents header to settings page if docs are missing.
+     */
+    public function add_mandatory_docs_header($blocks, $template)
+    {
+        if (!is_user_logged_in())
+            return $blocks;
+
+        $user_id = get_current_user_id();
+        $user = get_userdata($user_id);
+        $roles = (array) $user->roles;
+
+        $id_doc = get_user_meta($user_id, 'hp_proof_identity', true);
+        $school_doc = get_user_meta($user_id, 'hp_proof_school', true);
+        $is_verified = $this->is_user_verified($user_id);
+
+        if ($is_verified) {
+            return $blocks;
+        }
+
+        $missing_docs = false;
+        if (in_array('bee', $roles)) {
+            if (!$id_doc || !$school_doc) {
+                $missing_docs = true;
+            }
+        } elseif (in_array('requestor', $roles)) {
+            if (!$id_doc) {
+                $missing_docs = true;
+            }
+        }
+
+        if ($missing_docs && isset($blocks['page_content'])) {
+            $blocks['page_content']['blocks']['mandatory_docs_notice'] = [
+                'type' => 'content',
+                'content' => '<div class="beezy-mandatory-alert"><i class="fas fa-exclamation-triangle"></i> Please upload the mandatory documents to complete your registration</div>',
+                '_order' => 1,
+            ];
+        }
+
+        return $blocks;
+    }
+
+    /**
+     * Render JS to highlight missing mandatory fields.
+     */
+    private function render_mandatory_docs_js()
+    {
+        $user_id = get_current_user_id();
+        $user = get_userdata($user_id);
+        $roles = (array) $user->roles;
+
+        $id_missing = !get_user_meta($user_id, 'hp_proof_identity', true);
+        $school_missing = !get_user_meta($user_id, 'hp_proof_school', true);
+        $is_verified = $this->is_user_verified($user_id);
+
+        $is_bee = in_array('bee', $roles);
+        $is_requestor = in_array('requestor', $roles);
+
+        ?>
+        <script>
+            jQuery(document).ready(function ($) {
+                const isVerified = <?php echo $is_verified ? 'true' : 'false'; ?>;
+                const isBee = <?php echo $is_bee ? 'true' : 'false'; ?>;
+                const isRequestor = <?php echo $is_requestor ? 'true' : 'false'; ?>;
+                const idMissing = <?php echo $id_missing ? 'true' : 'false'; ?>;
+                const schoolMissing = <?php echo $school_missing ? 'true' : 'false'; ?>;
+
+                // Removed settings-only verified header injection (now handled globally in nav)
+
+                const $formFields = $('.hp-form--user-update .hp-form__fields');
+                const $idField = $('.hp-form__field:has([name="proof_identity"])');
+                const $schoolField = $('.hp-form__field:has([name="proof_school"])');
+
+                if ($formFields.length) {
+                    $formFields.css({ display: 'flex', flexDirection: 'column' });
+
+                    // Hide (Optional) labels for mandatory fields
+                    $idField.find('.hp-field__label small').hide();
+                    $schoolField.find('.hp-field__label small').hide();
+
+                    if (isVerified) {
+                        // If verified, disable the fields but keep them visible
+                        [$idField, $schoolField].forEach($f => {
+                            if ($f.length) {
+                                $f.css('opacity', '0.7');
+                                $f.find('input, button, .hp-field--attachment-upload').css({
+                                    'pointer-events': 'none',
+                                    'cursor': 'not-allowed'
+                                });
+                                // Target specifically the select file button if it exists
+                                $f.find('.hp-field__button').attr('disabled', 'disabled');
+                            }
+                        });
+
+                        // Set orders
+                        if (isBee) {
+                            $idField.css('order', -20);
+                            $schoolField.css('order', -15);
+                        } else if (isRequestor) {
+                            $idField.css('order', -20);
+                            $schoolField.hide();
+                        }
+                        return; // Exit early, no success/error highlights needed
+                    }
+
+                    if (isBee) {
+                        $idField.css('order', -20);
+                        $schoolField.css('order', -15);
+
+                        if (idMissing) {
+                            $idField.addClass('beezy-field-error')
+                                .append('<div style="color:#c53030; font-size:0.9em; margin-top:5px;">Please upload your proof of identity to verify your account. After uploading don\'t forget to click "Save changes" on the bottom of this page.</div>');
+                        } else {
+                            $idField.addClass('beezy-field-success')
+                                .append('<div style="color:#2f855a; font-size:0.9em; margin-top:5px;">Thanks for sending your proof of identity, it is now being verified. You will receive a confirmation email in 2 working days</div>');
+                        }
+
+                        if (schoolMissing) {
+                            $schoolField.addClass('beezy-field-error')
+                                .append('<div style="color:#c53030; font-size:0.9em; margin-top:5px;">Please upload your proof of school enrollment to complete your profile</div>');
+                        } else {
+                            $schoolField.addClass('beezy-field-success')
+                                .append('<div style="color:#2f855a; font-size:0.9em; margin-top:5px;">Thanks for sending your proof of enrollment, it is now being verified. You will receive a confirmation email in 2 working days</div>');
+                        }
+                    } else if (isRequestor) {
+                        $idField.css('order', -20);
+                        $schoolField.hide(); // Requestors don't need school proof
+
+                        if (idMissing) {
+                            $idField.addClass('beezy-field-error')
+                                .append('<div style="color:#c53030; font-size:0.9em; margin-top:5px;">Please upload your proof of identity to verify your account. After uploading don\'t forget to click "Save changes" on the bottom of this page.</div>');
+                        } else {
+                            $idField.addClass('beezy-field-success')
+                                .append('<div style="color:#2f855a; font-size:0.9em; margin-top:5px;">Thanks for sending your proof of identity, it is now being verified. You will receive a confirmation email in 2 working days</div>');
+                        }
+                    }
+                }
+            });
+        </script>
+        <?php
     }
 
     private function render_request_countdown_script()
@@ -233,6 +697,13 @@ final class Beezy_Core
        --------------------------------------------------------- */
     private function init_guards()
     {
+        // Admin Bar Guard (Hide for non-admins)
+        add_action('after_setup_theme', function () {
+            if (!current_user_can('manage_options')) {
+                show_admin_bar(false);
+            }
+        });
+
         // T&C Guard
         add_action('wp_head', [$this, 'enforce_terms_modal']);
         add_action('wp_ajax_user_terms_action', [$this, 'handle_terms_ajax']);
@@ -380,6 +851,12 @@ final class Beezy_Core
             if (!get_user_meta($user->ID, 'hp_doc_verified', true)) {
                 $this->render_verification_required_page();
             }
+        }
+
+        // Redirect /account/ to /account/settings/ (Requested by user)
+        if (untrailingslashit(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)) === '/account') {
+            wp_safe_redirect(home_url('/account/settings/'));
+            exit;
         }
     }
 
@@ -550,6 +1027,65 @@ final class Beezy_Core
             })(jQuery);
         </script>
         <?php
+    }
+    /* ---------------------------------------------------------
+       MODULE 5: Admin Tweaks
+       --------------------------------------------------------- */
+    private function init_admin()
+    {
+        if (is_admin()) {
+            add_action('show_user_profile', [$this, 'render_admin_user_tc_info']);
+            add_action('edit_user_profile', [$this, 'render_admin_user_tc_info']);
+        }
+    }
+
+    /**
+     * Display T&C agreement status and timestamp in User Profile.
+     */
+    public function render_admin_user_tc_info($user)
+    {
+        $accepted = get_user_meta($user->ID, 'terms_accepted_v1', true);
+        ?>
+        <hr />
+        <h3>Beezy Platform Status</h3>
+        <table class="form-table">
+            <tr>
+                <th><label>Terms & Conditions</label></th>
+                <td>
+                    <?php if ($accepted): ?>
+                        <span class="dashicons dashicons-yes"
+                            style="color: #46b450; font-size: 20px; vertical-align: middle;"></span>
+                        <strong style="color: #46b450;">Accepted</strong>
+                        <p class="description">
+                            Agreed on: <code><?php echo date('Y-m-d H:i:s', (int) $accepted); ?></code>
+                        </p>
+                    <?php else: ?>
+                        <span class="dashicons dashicons-no"
+                            style="color: #dc3232; font-size: 20px; vertical-align: middle;"></span>
+                        <strong style="color: #dc3232;">Not Accepted Yet</strong>
+                        <p class="description">User has not yet interacted with the T&C modal.</p>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+        <?php
+    }
+
+    /* ---------------------------------------------------------
+       HELPERS & UTILITIES
+       --------------------------------------------------------- */
+    private function is_user_verified($user_id)
+    {
+        if (!$user_id)
+            return false;
+
+        // Check both hp_ and non-hp keys for robustness
+        $val_hp = get_user_meta($user_id, 'hp_doc_verified', true);
+        $val_direct = get_user_meta($user_id, 'doc_verified', true);
+
+        $valid_trues = [1, '1', true, 'true', 'yes', 'Yes'];
+
+        return in_array($val_hp, $valid_trues) || in_array($val_direct, $valid_trues);
     }
 }
 
