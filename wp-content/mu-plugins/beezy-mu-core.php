@@ -114,7 +114,6 @@ final class Beezy_Core
         // Remove Hourly Rate
         add_filter('hivepress/v1/forms/user_update', [$this, 'remove_hourly_rate_field'], 1000);
 
-        // Multi-language Switcher (via JS for better reliability)
     }
 
     public function render_global_ui_styles()
@@ -197,57 +196,6 @@ final class Beezy_Core
             .hp-form__field--hp-hourly-rate {
                 display: none !important;
             }
-
-            /* Language Switcher Styling */
-            .beezy-menu-item-switcher {
-                display: flex !important;
-                align-items: center !important;
-            }
-
-            .beezy-language-switcher {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-left: 15px;
-                padding-left: 15px;
-                border-left: 1px solid rgba(0, 0, 0, 0.1);
-                height: 24px;
-            }
-
-            .beezy-language-item {
-                display: flex;
-                align-items: center;
-                text-decoration: none !important;
-                opacity: 0.6;
-                transition: all 0.2s ease;
-                filter: grayscale(20%);
-            }
-
-            .beezy-language-item:hover,
-            .beezy-language-item.active {
-                opacity: 1;
-                filter: grayscale(0%);
-                transform: translateY(-1px);
-            }
-
-            .beezy-language-item img {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                object-fit: cover;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                border: 1px solid #fff;
-            }
-
-            @media screen and (max-width: 768px) {
-                .beezy-language-switcher {
-                    margin-left: 0;
-                    padding-left: 0;
-                    border-left: none;
-                    margin-top: 10px;
-                    justify-content: center;
-                }
-            }
         </style>
         <?php
     }
@@ -255,18 +203,6 @@ final class Beezy_Core
     public function render_ui_js_tweaks()
     {
         ?>
-        <script>
-            jQuery(document).ready(function ($) {
-                // Inject Language Switcher
-                const switcherHtml = `<?php echo addslashes($this->render_language_switcher_html()); ?>`;
-                const $menu = $('.hp-menu--site-header > ul');
-                if ($menu.length && !$('.beezy-language-switcher').length) {
-                    $menu.append(`<li class="hp-menu__item beezy-menu-item-switcher">${switcherHtml}</li>`);
-                } else if ($('.header-navbar__actions').length && !$('.beezy-language-switcher').length) {
-                    $('.header-navbar__actions').append(switcherHtml);
-                }
-            });
-        </script>
         <?php
 
         if (is_user_logged_in() && current_user_can('bee')) {
@@ -458,32 +394,6 @@ final class Beezy_Core
     /**
      * Render the language switcher HTML with UK and NL flags.
      */
-    private function render_language_switcher_html()
-    {
-        $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
-        // Basic detection for TranslatePress (can be refined)
-        $is_dutch = strpos($_SERVER['REQUEST_URI'], '/nl/') !== false;
-
-        // Circular Flags via reliable CDN (Flagpedia)
-        $uk_flag = 'https://flagcdn.com/w40/gb.png';
-        $nl_flag = 'https://flagcdn.com/w40/nl.png';
-
-        ob_start();
-        ?>
-        <div class="beezy-language-switcher">
-            <a href="<?php echo esc_url(str_replace('/nl/', '/', $current_url)); ?>"
-                class="beezy-language-item <?php echo !$is_dutch ? 'active' : ''; ?>" title="English">
-                <img src="<?php echo $uk_flag; ?>" alt="English">
-            </a>
-            <a href="<?php echo esc_url($is_dutch ? $current_url : home_url('/nl' . $_SERVER['REQUEST_URI'])); ?>"
-                class="beezy-language-item <?php echo $is_dutch ? 'active' : ''; ?>" title="Dutch">
-                <img src="<?php echo $nl_flag; ?>" alt="Dutch">
-            </a>
-        </div>
-        <?php
-        return ob_get_clean();
-    }
 
     /**
      * Add mandatory documents header to settings page if docs are missing.
@@ -992,37 +902,52 @@ final class Beezy_Core
         <script>
             (function ($) {
                 function tweak(f) {
-                    if (f.data('tweaked')) return;
-                    f.data('tweaked', 1);
-
+                    // Category & City placeholders
                     const map = { categories: 'Type of request', task_city: 'City' };
                     Object.keys(map).forEach(n => {
                         const $s = f.find(`select[name="${n}"]`);
                         if ($s.length && !$s.find('option[value=""]').length) {
-                            $s.prepend(`<option value="" disabled selected>${map[n]}</option>`);
+                            // Prepend placeholder WITHOUT forced 'selected' attribute.
+                            // This prevents resetting the selection after an AJAX update.
+                            $s.prepend(`<option value="" disabled>${map[n]}</option>`);
+
+                            // Only set selection to placeholder if no value is currently selected.
+                            if (!$s.val()) {
+                                $s.val('');
+                            }
                         }
                     });
 
+                    // Character limits
                     const limits = { title: 60, description: 800 };
                     Object.keys(limits).forEach(n => {
                         const $i = f.find(`[name="${n}"]`);
-                        if ($i.length) {
-                            const $c = $(`<small class="hp-field__description">0/${limits[n]}</small>`).insertAfter($i);
+                        if ($i.length && !$i.data('limiter-added')) {
+                            $i.data('limiter-added', 1);
+                            const $c = $(`<small class="hp-field__description">${$i.val().length}/${limits[n]}</small>`).insertAfter($i);
                             $i.on('input', () => $c.text(`${$i.val().length}/${limits[n]}`));
                         }
                     });
 
+                    // Budget description
                     const $budget = f.find('[name="budget"]');
-                    if ($budget.length) {
+                    if ($budget.length && !$budget.data('desc-added')) {
+                        $budget.data('desc-added', 1);
                         $('<small class="hp-field__description">(value in Euros)</small>').insertAfter($budget);
                     }
 
+                    // Remove images field if present
                     f.find('.hp-form__field:has(input[name="images"])').remove();
                 }
-                $(document).on('DOMContentLoaded', () => {
+
+                $(document).ready(function () {
+                    // Initial tweak for any existing forms.
                     $('form.hp-form--request-submit').each(function () { tweak($(this)); });
-                    new MutationObserver(() => $('form.hp-form--request-submit').each(function () { tweak($(this)); }))
-                        .observe(document.body, { childList: true, subtree: true });
+
+                    // Use MutationObserver to handle forms that are added or replaced via AJAX.
+                    new MutationObserver(() => {
+                        $('form.hp-form--request-submit').each(function () { tweak($(this)); });
+                    }).observe(document.body, { childList: true, subtree: true });
                 });
             })(jQuery);
         </script>
