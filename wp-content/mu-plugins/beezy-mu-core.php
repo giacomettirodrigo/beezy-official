@@ -135,9 +135,12 @@ final class Beezy_Core
     public function ensure_messages_menu_item($menu)
     {
         // 1. Handle Messages Link (Prevent Duplicates)
-        // Remove any messages_thread_page to prevent duplicates
+        // Remove any duplicate message menu items HivePress may have added
         if (isset($menu['items']['messages_thread_page'])) {
             unset($menu['items']['messages_thread_page']);
+        }
+        if (isset($menu['items']['messages_thread'])) {
+            unset($menu['items']['messages_thread']);
         }
 
         // Ensure single Messages link exists
@@ -170,6 +173,14 @@ final class Beezy_Core
 
     private function get_unread_offer_count($user_id)
     {
+        // Cache key for performance
+        $cache_key = 'beezy_unread_offer_count_' . $user_id;
+        $cached_count = get_transient($cache_key);
+
+        if ($cached_count !== false) {
+            return (int) $cached_count;
+        }
+
         // Count offers on user's requests that are NOT marked as seen
         // Offers are comments on Requests
         $args = [
@@ -181,10 +192,12 @@ final class Beezy_Core
         ];
         $request_ids = get_posts($args);
 
-        if (empty($request_ids))
+        if (empty($request_ids)) {
+            set_transient($cache_key, 0, 5 * MINUTE_IN_SECONDS);
             return 0;
+        }
 
-        $comments = get_comments([
+        $comments_count = get_comments([
             'post__in' => $request_ids,
             'type' => 'hp_offer', // Assuming 'hp_offer' is the comment type for offers
             'meta_query' => [
@@ -196,7 +209,9 @@ final class Beezy_Core
             'count' => true
         ]);
 
-        return $comments;
+        set_transient($cache_key, $comments_count, 5 * MINUTE_IN_SECONDS);
+
+        return $comments_count;
     }
 
     public function render_global_ui_styles()
@@ -337,10 +352,6 @@ final class Beezy_Core
                     };
 
                     updateAccountLink();
-                    // Handle dynamic updates (e.g. if header is re-rendered via AJAX)
-                    if (window.MutationObserver) {
-                        new MutationObserver(updateAccountLink).observe(document.body, { childList: true, subtree: true });
-                    }
 
                     // Top Nav Verification Badge
                     const isVerified = <?php echo $this->is_user_verified(get_current_user_id()) ? 'true' : 'false'; ?>;
@@ -352,9 +363,6 @@ final class Beezy_Core
                             }
                         };
                         injectNavBadge();
-                        if (window.MutationObserver) {
-                            new MutationObserver(injectNavBadge).observe(document.body, { childList: true, subtree: true });
-                        }
                     }
                 });
             </script>
@@ -443,16 +451,22 @@ final class Beezy_Core
 
         $user_id = get_current_user_id();
         if ($user_id) {
-            $vendor_id = get_posts([
-                'post_type' => 'hp_vendor',
-                'author' => $user_id,
-                'post_status' => 'publish',
-                'fields' => 'ids',
-                'numberposts' => 1,
-            ]);
+            $cache_key = 'beezy_vendor_id_' . $user_id;
+            $vendor_id = get_transient($cache_key);
+
+            if ($vendor_id === false) {
+                $vendor_posts = get_posts([
+                    'post_type' => 'hp_vendor',
+                    'author' => $user_id,
+                    'post_status' => 'publish',
+                    'fields' => 'ids',
+                    'numberposts' => 1,
+                ]);
+                $vendor_id = !empty($vendor_posts) ? $vendor_posts[0] : 0;
+                set_transient($cache_key, $vendor_id, 12 * HOUR_IN_SECONDS);
+            }
 
             if ($vendor_id) {
-                $vendor_id = $vendor_id[0];
                 $menu['items']['vendor_view'] = [
                     'label' => 'View Profile',
                     'url' => get_permalink($vendor_id),
@@ -1300,32 +1314,89 @@ final class Beezy_Core
 
     private function send_beezy_welcome_message($order, $request_id, $offer_id)
     {
-        $buyer_id = $order->get_customer_id();
+        $buyer_id = $order->get_customer_id(); // Requestor
         $vendor_post_id = $order->get_meta('hp_vendor');
-        $vendor_user_id = $vendor_post_id ? (int) get_post_field('post_author', $vendor_post_id) : 0;
+        $vendor_user_id = $vendor_post_id ? (int) get_post_field('post_author', $vendor_post_id) : 0; // Bee
 
-        if (!$buyer_id || !$vendor_user_id)
+        if (!$buyer_id || !$vendor_user_id || !$request_id)
             return;
 
         $buyer = get_userdata($buyer_id);
         $vendor = get_userdata($vendor_user_id);
 
-        $message_text = "Hello! This is an automated message to confirm the service acceptance.\n\n" .
-            "To the Bee: Congratulations, you won the offer!\n" .
-            "To the Requestor: Please get in touch with the Bee to align on the execution of the requested service.";
+        if (!$buyer || !$vendor) {
+            error_log("Beezy Welcome: Unable to load user data for buyer {$buyer_id} or vendor {$vendor_user_id}");
+            return;
+        }
 
-        $message = new \HivePress\Models\Message();
-        $message->fill([
+        // Deduplication: Check if welcome messages were already sent for this order
+        if ($order->get_meta('_beezy_welcome_sent')) {
+            return;
+        }
+
+        // Get request details for personalization
+        $request = get_post($request_id);
+        $request_title = $request ? $request->post_title : 'your request';
+
+        $message_to_bee = "🎉 Congratulations! Your offer has been accepted!\n\n" .
+            "Great news! I've accepted your offer for '{$request_title}'.\n\n" .
+            "Let's coordinate the details and get started. Please reply here to discuss the next steps, timeline, and any questions you might have.\n\n" .
+            "Looking forward to working with you!";
+
+        $message_to_requestor = "✅ I'm excited to work on your request!\n\n" .
+            "Thank you for accepting my offer for '{$request_title}'!\n\n" .
+            "I'm ready to get started and deliver excellent results. Let's discuss the details, timeline, and coordinate the execution.\n\n" .
+            "Feel free to reply here with any questions or specific requirements. Let's make this happen! 🙌";
+
+        // MESSAGE 1: Requestor → Bee
+        $msg1 = new \HivePress\Models\Message();
+        $msg1->fill([
             'sender' => $buyer_id,
-            'sender__display_name' => $buyer ? $buyer->display_name : 'System',
-            'sender__email' => $buyer ? $buyer->user_email : '',
             'recipient' => $vendor_user_id,
-            'text' => $message_text,
-            'request' => $request_id,
+            'text' => $message_to_bee,
+            'listing' => $vendor_post_id,
             'read' => 0,
         ]);
 
-        $message->save();
+        if ($msg1->save()) {
+            // Mark as sent only if at least the first message succeeds, 
+            // though ideally we update this flag at the end.
+        } else {
+            error_log("Beezy Welcome: Failed to save MSG1 (Req->Bee). Errors: " . print_r($msg1->_get_errors(), true));
+        }
+
+        // MESSAGE 2: Bee → Requestor
+        $msg2 = new \HivePress\Models\Message();
+        $msg2->fill([
+            'sender' => $vendor_user_id,
+            'recipient' => $buyer_id,
+            'text' => $message_to_requestor,
+            'listing' => $vendor_post_id,
+            'read' => 0,
+        ]);
+
+        if ($msg2->save()) {
+            // Success
+        } else {
+            error_log("Beezy Welcome: Failed to save MSG2 (Bee->Req). Errors: " . print_r($msg2->_get_errors(), true));
+        }
+
+        // Mark as sent to prevent duplicates
+        $order->update_meta_data('_beezy_welcome_sent', 'yes');
+        $order->save();
+
+        // Flush HivePress and WordPress caches to ensure visibility
+        if (function_exists('hivepress')) {
+            hivepress()->cache->delete_user_cache($buyer_id, null, 'models/message');
+            hivepress()->cache->delete_user_cache($vendor_user_id, null, 'models/message');
+            hivepress()->cache->delete_user_cache($buyer_id, 'thread_ids', 'models/message');
+            hivepress()->cache->delete_user_cache($vendor_user_id, 'thread_ids', 'models/message');
+        }
+
+        wp_cache_delete('hp_user_cache_' . $buyer_id . '_models/message', 'hivepress');
+        wp_cache_delete('hp_user_cache_' . $vendor_user_id . '_models/message', 'hivepress');
+        delete_transient('hp_messages_' . $buyer_id);
+        delete_transient('hp_messages_' . $vendor_user_id);
     }
 
     /* ---------------------------------------------------------
@@ -1346,6 +1417,8 @@ final class Beezy_Core
             'vendors_view_page',
             'user_view_block',
             'user_view_page',
+            'request_view_page',
+            'request_view_block',
             'messages_view_page',
             'message_view_page',
             'order_footer_block'
@@ -1358,6 +1431,14 @@ final class Beezy_Core
         // Add Empty Messages Placeholder to proper templates
         add_filter('hivepress/v1/templates/messages_thread_page', [$this, 'add_empty_messages_placeholder'], 2000);
         add_filter('hivepress/v1/templates/messages_view_page', [$this, 'add_empty_messages_placeholder'], 2000);
+
+        // Global Block Filtering (Catch-all for icons and buttons)
+        add_filter('hivepress/v1/blocks/message_send_modal', [$this, 'filter_message_blocks'], 1000, 2);
+        add_filter('hivepress/v1/blocks/message_send_link', [$this, 'filter_message_blocks'], 1000, 2);
+        add_filter('hivepress/v1/blocks/message_send_form', [$this, 'filter_message_blocks'], 1000, 2);
+
+        // CSS Lockdown as fallback
+        add_action('wp_head', [$this, 'render_messaging_css_guard'], 100);
 
         // Track Offer Views
         add_action('wp_insert_comment', [$this, 'mark_new_offer_unseen'], 10, 2);
@@ -1509,29 +1590,32 @@ final class Beezy_Core
         }
 
         $recipient_user_id = 0;
+        $request_id = null;
         $context = $component->get_context();
 
-        if (isset($context['listing']) && is_object($context['listing']) && method_exists($context['listing'], 'get_user__id')) {
+        // Extract request ID from context if available
+        if (isset($context['request']) && is_object($context['request']) && method_exists($context['request'], 'get_id')) {
+            $request_id = $context['request']->get_id();
+            $recipient_user_id = $context['request']->get_user__id();
+        } elseif (isset($context['listing']) && is_object($context['listing']) && method_exists($context['listing'], 'get_user__id')) {
             $recipient_user_id = $context['listing']->get_user__id();
         } elseif (isset($context['vendor']) && is_object($context['vendor']) && method_exists($context['vendor'], 'get_user__id')) {
             $recipient_user_id = $context['vendor']->get_user__id();
         } elseif (isset($context['user']) && is_object($context['user']) && method_exists($context['user'], 'get_id')) {
             $recipient_user_id = $context['user']->get_id();
-        } elseif (isset($context['request']) && is_object($context['request']) && method_exists($context['request'], 'get_user__id')) {
-            $recipient_user_id = $context['request']->get_user__id();
         } elseif (isset($context['recipient']) && is_object($context['recipient']) && method_exists($context['recipient'], 'get_id')) {
             $recipient_user_id = $context['recipient']->get_id();
         }
 
         if ($recipient_user_id && $recipient_user_id !== get_current_user_id()) {
-            if (!$this->can_users_communicate(get_current_user_id(), $recipient_user_id)) {
+            if (!$this->can_users_communicate(get_current_user_id(), $recipient_user_id, $request_id)) {
                 return null;
             }
         }
         return $block;
     }
 
-    private function can_users_communicate($user_a_id, $user_b_id)
+    private function can_users_communicate($user_a_id, $user_b_id, $request_id = null)
     {
         if (current_user_can('manage_options')) {
             return true;
@@ -1544,7 +1628,7 @@ final class Beezy_Core
         // Search for orders where User A is customer
         $orders = wc_get_orders([
             'customer' => $user_a_id,
-            'status' => ['completed', 'processing', 'on-hold'], // Added on-hold/processing for safety
+            'status' => ['completed'], // Only completed orders represent confirmed payment
             'limit' => -1,
             'meta_key' => '_beezy_order_type',
             'meta_value' => 'platform_fee_acceptance',
@@ -1553,7 +1637,7 @@ final class Beezy_Core
         // Also search where User B is customer (to cover both directions)
         $orders_b = wc_get_orders([
             'customer' => $user_b_id,
-            'status' => ['completed', 'processing', 'on-hold'],
+            'status' => ['completed'], // Only completed orders
             'limit' => -1,
             'meta_key' => '_beezy_order_type',
             'meta_value' => 'platform_fee_acceptance',
@@ -1575,18 +1659,21 @@ final class Beezy_Core
                 ($customer_id === (int) $user_b_id && $vendor_user_id === (int) $user_a_id);
 
             if ($involved) {
-                // Must be before Task Date
-                $request_id = $order->get_meta('hp_request');
-                if ($request_id) {
-                    $task_date = get_post_meta($request_id, 'hp_task_date', true);
+                $order_request_id = $order->get_meta('hp_request');
 
-                    // Debug Log
-                    // error_log("Beezy Check: Involved Users A:$user_a_id B:$user_b_id for Order {$order->get_id()}. Task Date: $task_date");
+                // If specific request ID provided, only allow if this order is for that request
+                if ($request_id && $order_request_id != $request_id) {
+                    continue; // This order is for a different request
+                }
+
+                if ($order_request_id) {
+                    $task_date = get_post_meta($order_request_id, 'hp_task_date', true);
 
                     if ($task_date) {
                         $expiry = strtotime($task_date);
-                        // Extend expiry to end of day just in case
-                        if ($expiry && $now <= ($expiry + 86400)) {
+                        // Set expiry to end of task_date day (23:59:59)
+                        $expiry_end_of_day = strtotime(date('Y-m-d 23:59:59', $expiry));
+                        if ($expiry_end_of_day && $now <= $expiry_end_of_day) {
                             return true;
                         }
                     } else {
@@ -1606,6 +1693,8 @@ final class Beezy_Core
         if (!is_object($message) || !method_exists($message, 'get_sender__id'))
             return $errors;
 
+        // Note: We can't extract request_id from message context here, but the validation still enforces
+        // that users can only communicate if they have ANY valid paid request together within the time window
         if (!$this->can_users_communicate($message->get_sender__id(), $message->get_recipient__id())) {
             $errors[] = "Communication is only allowed for the specific Requestor and Bee of a paid service, until the task date.";
         }
@@ -1624,17 +1713,19 @@ final class Beezy_Core
         }
 
         $recipient_user_id = 0;
+        $request_id = null;
         $context = $template->get_context();
 
-        // Find recipient in various template contexts
-        if (isset($context['listing']) && is_object($context['listing']) && method_exists($context['listing'], 'get_user__id')) {
+        // Extract request ID from context if available (prioritize this)
+        if (isset($context['request']) && is_object($context['request']) && method_exists($context['request'], 'get_id')) {
+            $request_id = $context['request']->get_id();
+            $recipient_user_id = $context['request']->get_user__id();
+        } elseif (isset($context['listing']) && is_object($context['listing']) && method_exists($context['listing'], 'get_user__id')) {
             $recipient_user_id = $context['listing']->get_user__id();
         } elseif (isset($context['vendor']) && is_object($context['vendor']) && method_exists($context['vendor'], 'get_user__id')) {
             $recipient_user_id = $context['vendor']->get_user__id();
         } elseif (isset($context['user']) && is_object($context['user']) && method_exists($context['user'], 'get_id')) {
             $recipient_user_id = $context['user']->get_id();
-        } elseif (isset($context['request']) && is_object($context['request']) && method_exists($context['request'], 'get_user__id')) {
-            $recipient_user_id = $context['request']->get_user__id();
         } elseif (isset($context['recipient']) && is_object($context['recipient']) && method_exists($context['recipient'], 'get_id')) {
             $recipient_user_id = $context['recipient']->get_id();
         } elseif (isset($context['order']) && is_object($context['order']) && method_exists($context['order'], 'get_customer_id')) {
@@ -1646,7 +1737,7 @@ final class Beezy_Core
         }
 
         if ($recipient_user_id && $recipient_user_id !== get_current_user_id()) {
-            if (!$this->can_users_communicate(get_current_user_id(), $recipient_user_id)) {
+            if (!$this->can_users_communicate(get_current_user_id(), $recipient_user_id, $request_id)) {
                 // Use merge_blocks for reliable removal
                 $template->merge_blocks([
                     'message_send_modal' => ['type' => 'content', 'content' => ''],
@@ -1837,12 +1928,194 @@ final class Beezy_Core
     private function init_admin()
     {
         if (is_admin()) {
+            add_action('admin_menu', [$this, 'register_admin_messaging_page']);
             add_action('show_user_profile', [$this, 'render_admin_user_tc_info']);
             add_action('edit_user_profile', [$this, 'render_admin_user_tc_info']);
             // Priority 1000 ensures we run AFTER themes that clear the dashboard (like taskhive-child)
             add_action('wp_dashboard_setup', [$this, 'add_dashboard_widgets'], 1000);
             add_action('wp_ajax_approve_beezy_request', [$this, 'handle_approve_request']);
         }
+    }
+
+    /**
+     * Register the Admin Messaging page in the sidebar.
+     */
+    public function register_admin_messaging_page()
+    {
+        add_menu_page(
+            'Message Management',
+            'Messages Management',
+            'manage_options',
+            'beezy-messages',
+            [$this, 'render_admin_messaging_page'],
+            'dashicons-email-alt3',
+            25
+        );
+    }
+
+    /**
+     * Render the Admin Messaging page.
+     */
+    public function render_admin_messaging_page()
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        global $wpdb;
+
+        // Handle Deletion
+        if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id']) && isset($_GET['_wpnonce'])) {
+            if (wp_verify_nonce($_GET['_wpnonce'], 'delete_msg_' . $_GET['id'])) {
+                $msg_id = (int) $_GET['id'];
+                $wpdb->delete($wpdb->comments, ['comment_ID' => $msg_id, 'comment_type' => 'hp_message']);
+                $wpdb->delete($wpdb->commentmeta, ['comment_id' => $msg_id]);
+                echo '<div class="notice notice-success is-dismissible"><p>Message deleted successfully.</p></div>';
+            }
+        }
+
+        // Handle Bulk Deletion
+        if (isset($_POST['beezy_bulk_delete']) && isset($_POST['messages_id']) && isset($_POST['_wpnonce_bulk'])) {
+            if (wp_verify_nonce($_POST['_wpnonce_bulk'], 'beezy_bulk_delete_msgs')) {
+                $ids = array_map('intval', $_POST['messages_id']);
+                if (!empty($ids)) {
+                    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+                    $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->comments} WHERE comment_ID IN ($placeholders) AND comment_type = 'hp_message'", $ids));
+                    $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->commentmeta} WHERE comment_id IN ($placeholders)", $ids));
+                    echo '<div class="notice notice-success is-dismissible"><p>Selected messages deleted successfully.</p></div>';
+                }
+            }
+        }
+
+        $messages = $wpdb->get_results($wpdb->prepare(
+            "SELECT comment_ID, comment_author, comment_content, comment_date, user_id, comment_karma as recipient_id 
+             FROM {$wpdb->comments} 
+             WHERE comment_type = %s 
+             ORDER BY comment_date DESC",
+            'hp_message'
+        ));
+
+        ?>
+        <div class="wrap">
+            <h1 class="wp-heading-inline">Message Management</h1>
+            <hr class="wp-header-end">
+
+            <style>
+                .beezy-msg-table {
+                    margin-top: 20px;
+                    background: #fff;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                }
+
+                .beezy-msg-table th {
+                    text-align: left;
+                    background: #f8f9fa;
+                    border-bottom: 2px solid #edeff0;
+                }
+
+                .beezy-msg-table td,
+                .beezy-msg-table th {
+                    padding: 12px 15px;
+                }
+
+                .beezy-unread {
+                    font-weight: bold;
+                    background: #f0f7ff;
+                }
+
+                .beezy-msg-actions a {
+                    color: #d63638;
+                    text-decoration: none;
+                    font-weight: 500;
+                }
+
+                .beezy-msg-actions a:hover {
+                    text-decoration: underline;
+                }
+
+                .beezy-msg-content {
+                    max-width: 400px;
+                    color: #50575e;
+                }
+
+                .beezy-user-info {
+                    font-size: 0.9em;
+                    color: #646970;
+                }
+            </style>
+
+            <form method="post">
+                <?php wp_nonce_field('beezy_bulk_delete_msgs', '_wpnonce_bulk'); ?>
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions">
+                        <select name="action">
+                            <option value="-1">Bulk Actions</option>
+                            <option value="delete">Delete Permanently</option>
+                        </select>
+                        <input type="submit" name="beezy_bulk_delete" class="button action" value="Apply">
+                    </div>
+                </div>
+
+                <table class="wp-list-table widefat fixed striped beezy-msg-table">
+                    <thead>
+                        <tr>
+                            <td id="cb" class="manage-column column-cb check-column"><input type="checkbox"
+                                    id="cb-select-all-1"></td>
+                            <th scope="col" class="manage-column">From</th>
+                            <th scope="col" class="manage-column">To</th>
+                            <th scope="col" class="manage-column" style="width: 40%;">Message</th>
+                            <th scope="col" class="manage-column">Date</th>
+                            <th scope="col" class="manage-column">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($messages)): ?>
+                            <tr>
+                                <td colspan="6">No messages found.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($messages as $msg):
+                                $sender = get_userdata($msg->user_id);
+                                $recipient = get_userdata($msg->recipient_id);
+                                ?>
+                                <tr>
+                                    <th scope="row" class="check-column"><input type="checkbox" name="messages_id[]"
+                                            value="<?php echo $msg->comment_ID; ?>"></th>
+                                    <td>
+                                        <strong><?php echo esc_html($msg->comment_author); ?></strong><br>
+                                        <span
+                                            class="beezy-user-info">@<?php echo $sender ? esc_html($sender->user_login) : 'unknown'; ?></span>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo $recipient ? esc_html($recipient->display_name) : 'Unknown'; ?></strong><br>
+                                        <span
+                                            class="beezy-user-info">@<?php echo $recipient ? esc_html($recipient->user_login) : 'unknown'; ?></span>
+                                    </td>
+                                    <td class="beezy-msg-content">
+                                        <?php echo nl2br(esc_html($msg->comment_content)); ?>
+                                    </td>
+                                    <td>
+                                        <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($msg->comment_date)); ?>
+                                    </td>
+                                    <td class="beezy-msg-actions">
+                                        <a href="<?php echo esc_url(wp_nonce_url(add_query_arg(['action' => 'delete', 'id' => $msg->comment_ID]), 'delete_msg_' . $msg->comment_ID)); ?>"
+                                            onclick="return confirm('Permanently delete this message?');">Delete</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <script>
+            jQuery(document).ready(function ($) {
+                $('#cb-select-all-1').on('change', function () {
+                    $('input[name="messages_id[]"]').prop('checked', $(this).prop('checked'));
+                });
+            });
+        </script>
+        <?php
     }
 
     /**
